@@ -13,10 +13,20 @@
             </h1>
             <p style="color: var(--color-text-secondary); font-size: 0.875rem;">Manage all songs, lyrics, and metadata</p>
         </div>
-        <a href="{{ route('admin.songs.create') }}" class="btn btn-primary"
-            style="display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-plus"></i> Add New Song
-        </a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <form action="{{ route('admin.songs.index') }}" method="GET">
+                <div style="position: relative;">
+                    <input type="text" name="q" placeholder="Search songs..." value="{{ request('q') }}"
+                        style="padding: 0.5rem 1rem 0.5rem 2.2rem; border: 1px solid var(--color-border); border-radius: 99px; font-size: 0.875rem; width: 250px; outline: none;">
+                    <i class="fa-solid fa-magnifying-glass"
+                        style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: 0.8rem;"></i>
+                </div>
+            </form>
+            <a href="{{ route('admin.songs.create') }}" class="btn btn-primary"
+                style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-plus"></i> Add New Song
+            </a>
+        </div>
     </div>
 
     {{-- Stats Summary Cards --}}
@@ -69,6 +79,7 @@
                         <th style="width: 30%;">Title</th>
                         <th>Artist</th>
                         <th>Genre</th>
+                        <th>Language</th>
                         <th>Year</th>
                         <th>Views</th>
                         <th>Status</th>
@@ -100,6 +111,20 @@
                                 @else
                                     <span style="color: var(--color-text-muted);">-</span>
                                 @endif
+                            </td>
+                            <td>
+                                @php
+                                    $language = $song->language ?? 'nepali';
+                                    $languageColors = [
+                                        'nepali' => ['bg' => '#dbeafe', 'text' => '#1e40af'],
+                                        'hindi' => ['bg' => '#fef3c7', 'text' => '#92400e'],
+                                        'english' => ['bg' => '#d1fae5', 'text' => '#065f46'],
+                                    ];
+                                    $color = $languageColors[$language] ?? $languageColors['nepali'];
+                                @endphp
+                                <span class="badge" style="background: {{ $color['bg'] }}; color: {{ $color['text'] }};">
+                                    <i class="fa-solid fa-language"></i> {{ ucfirst($language) }}
+                                </span>
                             </td>
                             <td>
                                 @if($song->year)

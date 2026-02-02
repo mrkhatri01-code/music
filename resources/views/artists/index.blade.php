@@ -56,7 +56,15 @@
     <div class="artists-grid">
         @forelse($artists as $artist)
             <a href="{{ route('artist.show', $artist->slug) }}" class="artist-card">
-                <div class="artist-avatar">{{ substr($artist->name_english, 0, 1) }}</div>
+                <div class="artist-avatar"
+                    style="{{ $artist->profile_image_url ? 'background: none; padding: 0; overflow: hidden;' : '' }}">
+                    @if($artist->profile_image_url)
+                        <img src="{{ $artist->profile_image_url }}" alt="{{ $artist->name_english }}"
+                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    @else
+                        {{ substr($artist->name_english, 0, 1) }}
+                    @endif
+                </div>
                 <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;">{{ $artist->name_english }}</div>
                 <div style="color: #718096; font-size: 0.9rem; margin-bottom: 0.5rem;">{{ $artist->name_nepali }}</div>
                 <div style="color: #667eea; font-size: 0.85rem;">

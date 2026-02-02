@@ -40,6 +40,7 @@ Route::get('/album/{slug}', [AlbumController::class, 'show'])->name('album.show'
 
 // Songs
 Route::get('/lyrics/{artistSlug}/{songSlug}', [SongController::class, 'show'])->name('song.show');
+Route::get('/report/{artistSlug}/{songSlug}', [SongController::class, 'showReportForm'])->name('song.report.form');
 Route::post('/song/{songSlug}/report', [SongController::class, 'report'])->name('song.report');
 
 // Genres
@@ -66,6 +67,7 @@ Route::get('/trending-on-tiktok', [PageController::class, 'trendingOnTikTok'])->
 // Legal & Info Pages
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'submitContact'])->name('contact.submit');
 Route::get('/dmca', [PageController::class, 'dmca'])->name('dmca');
 Route::get('/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy');
 Route::get('/terms-of-service', [PageController::class, 'termsOfService'])->name('terms');
@@ -162,7 +164,13 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
     Route::get('/ads', [SettingsController::class, 'ads'])->name('admin.ads.index');
     Route::post('/ads', [SettingsController::class, 'updateAds'])->name('admin.ads.update');
 
+    // Reports
     Route::get('/reports', [SettingsController::class, 'reports'])->name('admin.reports.index');
     Route::post('/reports/{report}/status', [SettingsController::class, 'updateReportStatus'])->name('admin.reports.update-status');
     Route::delete('/reports/{report}', [SettingsController::class, 'destroy'])->name('admin.reports.destroy');
+
+    // Contacts
+    Route::get('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'index'])->name('admin.contacts.index');
+    Route::patch('/contacts/{contact}/status', [\App\Http\Controllers\Admin\ContactController::class, 'updateStatus'])->name('admin.contacts.update-status');
+    Route::delete('/contacts/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'destroy'])->name('admin.contacts.destroy');
 });

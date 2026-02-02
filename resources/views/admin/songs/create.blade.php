@@ -105,17 +105,88 @@
 
             <h3 style="margin: 2rem 0 1rem;">Lyrics</h3>
 
+            {{-- Language Selector --}}
             <div class="form-group">
-                <label for="lyrics_unicode">Lyrics (Nepali Unicode) *</label>
-                <textarea id="lyrics_unicode" name="lyrics_unicode" class="form-control" rows="15" required
-                    placeholder="Enter Nepali lyrics in Unicode...">{{ old('lyrics_unicode') }}</textarea>
+                <label for="language">Song Language *</label>
+                <select id="language" name="language" class="form-control" required onchange="toggleLyricsFields()">
+                    <option value="nepali" {{ old('language', 'nepali') == 'nepali' ? 'selected' : '' }}>Nepali</option>
+                    <option value="hindi" {{ old('language') == 'hindi' ? 'selected' : '' }}>Hindi</option>
+                    <option value="english" {{ old('language') == 'english' ? 'selected' : '' }}>English</option>
+                </select>
+                <small style="color: #718096; display: block; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-circle-info"></i> Select the language to show appropriate lyrics fields
+                </small>
             </div>
 
-            <div class="form-group">
-                <label for="lyrics_romanized">Lyrics (Romanized)</label>
-                <textarea id="lyrics_romanized" name="lyrics_romanized" class="form-control" rows="15"
-                    placeholder="Enter romanized lyrics (optional)...">{{ old('lyrics_romanized') }}</textarea>
+            {{-- Nepali Lyrics Fields (Default) --}}
+            <div id="nepaliLyricsFields" style="display: block;">
+                <div class="form-group">
+                    <label for="lyrics_unicode">Lyrics (Nepali Unicode) *</label>
+                    <textarea id="lyrics_unicode" name="lyrics_unicode" class="form-control" rows="15"
+                        placeholder="Enter Nepali lyrics in Unicode...">{{ old('lyrics_unicode') }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lyrics_romanized">Lyrics (Romanized)</label>
+                    <textarea id="lyrics_romanized" name="lyrics_romanized" class="form-control" rows="15"
+                        placeholder="Enter romanized lyrics (optional)...">{{ old('lyrics_romanized') }}</textarea>
+                </div>
             </div>
+
+            {{-- Hindi Lyrics Field --}}
+            <div id="hindiLyricsFields" style="display: none;">
+                <div class="form-group">
+                    <label for="lyrics_hindi">Lyrics (Hindi) *</label>
+                    <textarea id="lyrics_hindi" name="lyrics_hindi" class="form-control" rows="15"
+                        placeholder="Enter Hindi lyrics...">{{ old('lyrics_hindi') }}</textarea>
+                </div>
+            </div>
+
+            {{-- English Lyrics Field --}}
+            <div id="englishLyricsFields" style="display: none;">
+                <div class="form-group">
+                    <label for="lyrics_english">Lyrics (English) *</label>
+                    <textarea id="lyrics_english" name="lyrics_english" class="form-control" rows="15"
+                        placeholder="Enter English lyrics...">{{ old('lyrics_english') }}</textarea>
+                </div>
+            </div>
+
+            <script>
+                function toggleLyricsFields() {
+                    const language = document.getElementById('language').value;
+                    const nepaliFields = document.getElementById('nepaliLyricsFields');
+                    const hindiFields = document.getElementById('hindiLyricsFields');
+                    const englishFields = document.getElementById('englishLyricsFields');
+
+                    // Hide all fields first
+                    nepaliFields.style.display = 'none';
+                    hindiFields.style.display = 'none';
+                    englishFields.style.display = 'none';
+
+                    // Show relevant fields and manage required attribute
+                    if (language === 'nepali') {
+                        nepaliFields.style.display = 'block';
+                        document.getElementById('lyrics_unicode').required = true;
+                        document.getElementById('lyrics_hindi').required = false;
+                        document.getElementById('lyrics_english').required = false;
+                    } else if (language === 'hindi') {
+                        hindiFields.style.display = 'block';
+                        document.getElementById('lyrics_unicode').required = false;
+                        document.getElementById('lyrics_hindi').required = true;
+                        document.getElementById('lyrics_english').required = false;
+                    } else if (language === 'english') {
+                        englishFields.style.display = 'block';
+                        document.getElementById('lyrics_unicode').required = false;
+                        document.getElementById('lyrics_hindi').required = false;
+                        document.getElementById('lyrics_english').required = true;
+                    }
+                }
+
+                // Initialize on page load
+                document.addEventListener('DOMContentLoaded', function () {
+                    toggleLyricsFields();
+                });
+            </script>
 
             <div class="form-group">
                 <label class="checkbox-label">

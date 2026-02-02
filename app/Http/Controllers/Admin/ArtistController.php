@@ -9,11 +9,21 @@ use Illuminate\Support\Facades\Storage;
 
 class ArtistController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $artists = Artist::withCount('songs')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = Artist::withCount('songs');
+
+        if ($request->has('q')) {
+            $q = $request->q;
+            $query->where(function ($query) use ($q) {
+                $query->where('name_english', 'like', "%{$q}%")
+                    ->orWhere('name_nepali', 'like', "%{$q}%");
+            });
+        }
+
+        $artists = $query->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->appends($request->all());
 
         return view('admin.artists.index', compact('artists'));
     }

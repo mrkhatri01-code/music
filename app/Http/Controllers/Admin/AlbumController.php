@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $albums = Album::with('artist')->withCount('songs')->orderBy('created_at', 'desc')->paginate(15);
+        $query = Album::with('artist')->withCount('songs');
+
+        if ($request->has('q')) {
+            $q = $request->q;
+            $query->where('name', 'like', "%{$q}%");
+        }
+
+        $albums = $query->orderBy('created_at', 'desc')->paginate(15)->appends($request->all());
         return view('admin.albums.index', compact('albums'));
     }
 

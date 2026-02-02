@@ -3,24 +3,24 @@
 @section('title', 'Nepali Lyrics - Latest Nepali Songs Lyrics in Unicode & Romanized')
 @section('description', 'Read and download latest Nepali songs lyrics. Trending songs, new releases, top artists, and complete lyrics in Unicode and Romanized format.')
 
-    @push('structured-data')
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "name": "{{ config('app.name') }}",
-                "url": "{{ route('home') }}",
-                "potentialAction": {
-                    "@type": "SearchAction",
-                    "target": {
-                        "@type": "EntryPoint",
-                        "urlTemplate": "{{ route('search') }}?q={search_term_string}"
-                    },
-                    "query-input": "required name=search_term_string"
+@push('structured-data')
+    <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": "{{ config('app.name') }}",
+                    "url": "{{ route('home') }}",
+                    "potentialAction": {
+                        "@type": "SearchAction",
+                        "target": {
+                            "@type": "EntryPoint",
+                            "urlTemplate": "{{ route('search') }}?q={search_term_string}"
+                        },
+                        "query-input": "required name=search_term_string"
+                    }
                 }
-            }
-            </script>
-    @endpush
+                </script>
+@endpush
 
 @section('content')
     {{-- Trending Now Section --}}
@@ -146,6 +146,10 @@
                                 <i class="fa-solid fa-microphone"></i>
                                 {{ $song->artist->name_english }}
                             </span>
+                            <span>
+                                <i class="fa-solid fa-eye"></i>
+                                {{ number_format($song->views_count) }}
+                            </span>
                             <span class="badge badge-success">
                                 <i class="fa-solid fa-circle-check"></i>
                                 New
@@ -212,9 +216,16 @@
                 @foreach($topArtists as $artist)
                     <a href="{{ route('artist.show', $artist->slug) }}" class="card"
                         style="text-decoration: none; display: flex; align-items: center; gap: var(--space-4);">
-                        <div
-                            style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: var(--font-weight-bold); flex-shrink: 0;">
-                            {{ strtoupper(substr($artist->name_english, 0, 1)) }}
+                        <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
+                            @if($artist->profile_image_url)
+                                <img src="{{ $artist->profile_image_url }}" alt="{{ $artist->name_english }}"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <div
+                                    style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: var(--font-weight-bold);">
+                                    {{ strtoupper(substr($artist->name_english, 0, 1)) }}
+                                </div>
+                            @endif
                         </div>
                         <div style="flex: 1; min-width: 0;">
                             <div

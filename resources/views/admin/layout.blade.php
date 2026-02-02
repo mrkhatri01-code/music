@@ -910,6 +910,13 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.contacts.index') }}"
+                        class="{{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-envelope"></i>
+                        Contacts
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.settings.index') }}"
                         class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-gear"></i>
@@ -930,7 +937,7 @@
                     </a>
                 </li>
                 <li>
-                    <form action="{{ route('admin.logout') }}" method="POST">
+                    <form action="{{ route('admin.logout') }}" method="POST" id="logoutForm">
                         @csrf
                         <button type="submit">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -943,32 +950,36 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-error">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span>{{ session('error') }}</span>
-                </div>
-            @endif
-
-            @if($errors->any())
-                <div class="alert alert-error">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <div>
-                        <ul style="margin-left: var(--space-6); list-style: disc;">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+            {{-- Toast notifications now shown via SweetAlert at bottom-right --}}
+            {{-- Inline alerts hidden for cleaner UI --}}
+            <div style="display: none;">
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
-                </div>
-            @endif
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <div>
+                            <ul style="margin-left: var(--space-6); list-style: disc;">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+            </div>
 
             @yield('content')
         </main>
@@ -977,22 +988,34 @@
     @stack('scripts')
 
     <script>
-        // Check for session flash messages and show SweetAlert
+        // Check for session flash messages and show SweetAlert Toast (bottom-right)
         @if(session('success'))
             Swal.fire({
+                toast: true,
+                position: 'bottom-end',
                 icon: 'success',
-                title: 'Success!',
-                text: "{{ session('success') }}",
-                timer: 3000,
-                showConfirmButton: false
+                title: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'colored-toast'
+                }
             });
         @endif
 
         @if(session('error'))
             Swal.fire({
+                toast: true,
+                position: 'bottom-end',
                 icon: 'error',
-                title: 'Error!',
-                text: "{{ session('error') }}",
+                title: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'colored-toast'
+                }
             });
         @endif
 
@@ -1038,6 +1061,35 @@
                     });
                 }
             }
+        });
+
+        // Logout Confirmation
+        document.getElementById('logoutForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+
+            Swal.fire({
+                title: 'Logout?',
+                text: "Are you sure you want to logout from admin panel?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, logout',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                focusCancel: true,
+                background: '#ffffff',
+                customClass: {
+                    popup: 'rounded-xl shadow-xl',
+                    confirmButton: 'px-4 py-2 rounded-lg text-sm font-medium',
+                    cancelButton: 'px-4 py-2 rounded-lg text-sm font-medium'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     </script>
     <script src="{{ asset('js/admin/transliterate.js') }}"></script>

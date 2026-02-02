@@ -14,6 +14,9 @@ class Report extends Model
         'type',
         'description',
         'status',
+        'claimant_name',
+        'claimant_email',
+        'claimant_phone',
     ];
 
     public function song()

@@ -21,6 +21,7 @@ class Song extends Model
         'album_id',
         'year',
         'youtube_url',
+        'language',
         'views_count',
         'is_published',
         'meta_title',
@@ -110,7 +111,7 @@ class Song extends Model
         // Check if this IP viewed in last 24 hours
         $existing = $this->views()
             ->where('ip_hash', $ipHash)
-            ->where('created_at', '>=', now()->subDay())
+            ->where('created_at', '>=', now()->subMinutes(15))
             ->exists();
 
         if (!$existing) {
@@ -120,8 +121,14 @@ class Song extends Model
                 'user_agent_hash' => $uaHash,
             ]);
 
-            // Increment counter
+            // Increment song counter
             $this->increment('views_count');
+            $this->views_count++;
+
+            // Increment artist counter
+            if ($this->artist) {
+                $this->artist->increment('views_count');
+            }
 
             // Clear trending cache
             Cache::forget('trending_today');

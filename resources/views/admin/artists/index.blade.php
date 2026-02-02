@@ -14,10 +14,20 @@
             <p style="color: var(--color-text-secondary); font-size: 0.875rem;">Manage artists, profiles, and verification
                 status</p>
         </div>
-        <a href="{{ route('admin.artists.create') }}" class="btn btn-primary"
-            style="display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-user-plus"></i> Add New Artist
-        </a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <form action="{{ route('admin.artists.index') }}" method="GET">
+                <div style="position: relative;">
+                    <input type="text" name="q" placeholder="Search artists..." value="{{ request('q') }}"
+                        style="padding: 0.5rem 1rem 0.5rem 2.2rem; border: 1px solid var(--color-border); border-radius: 99px; font-size: 0.875rem; width: 250px; outline: none;">
+                    <i class="fa-solid fa-magnifying-glass"
+                        style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: 0.8rem;"></i>
+                </div>
+            </form>
+            <a href="{{ route('admin.artists.create') }}" class="btn btn-primary"
+                style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-user-plus"></i> Add New Artist
+            </a>
+        </div>
     </div>
 
     {{-- Stats Summary Cards --}}

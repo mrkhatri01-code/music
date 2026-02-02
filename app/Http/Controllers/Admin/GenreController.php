@@ -8,11 +8,18 @@ use Illuminate\Http\Request;
 
 class GenreController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $genres = Genre::withCount('songs')
-            ->orderBy('name')
-            ->paginate(20);
+        $query = Genre::withCount('songs');
+
+        if ($request->has('q')) {
+            $q = $request->q;
+            $query->where('name', 'like', "%{$q}%");
+        }
+
+        $genres = $query->orderBy('name')
+            ->paginate(20)
+            ->appends($request->all());
 
         return view('admin.genres.index', compact('genres'));
     }

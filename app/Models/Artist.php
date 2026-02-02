@@ -72,4 +72,21 @@ class Artist extends Model
     {
         $this->increment('views_count');
     }
+
+    // Accessors
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return asset('storage/' . $this->profile_image);
+        }
+        return null;
+    }
+
+    public function getCoverImageUrlAttribute()
+    {
+        if ($this->cover_image) {
+            return asset('storage/' . $this->cover_image);
+        }
+        return null;
+    }
 }

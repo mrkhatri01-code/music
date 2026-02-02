@@ -14,11 +14,21 @@ use Illuminate\Http\Request;
 
 class SongController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $songs = Song::with(['artist', 'genre'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = Song::with(['artist', 'genre', 'movie', 'album']);
+
+        if ($request->has('q')) {
+            $q = $request->q;
+            $query->where(function ($query) use ($q) {
+                $query->where('title_english', 'like', "%{$q}%")
+                    ->orWhere('title_nepali', 'like', "%{$q}%");
+            });
+        }
+
+        $songs = $query->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->appends($request->all());
 
         return view('admin.songs.index', compact('songs'));
     }
@@ -45,9 +55,12 @@ class SongController extends Controller
             'album_id' => 'nullable|exists:albums,id',
             'year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
             'youtube_url' => 'nullable|url',
+            'language' => 'required|in:nepali,hindi,english',
             'is_published' => 'boolean',
             'lyrics_unicode' => 'nullable|string',
             'lyrics_romanized' => 'nullable|string',
+            'lyrics_hindi' => 'nullable|string',
+            'lyrics_english' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
@@ -57,13 +70,33 @@ class SongController extends Controller
         // Create song
         $song = Song::create($validated);
 
-        // Create lyrics if provided
-        if ($request->filled('lyrics_unicode') || $request->filled('lyrics_romanized')) {
-            Lyric::create([
-                'song_id' => $song->id,
-                'content_unicode' => $request->lyrics_unicode,
-                'content_romanized' => $request->lyrics_romanized,
-            ]);
+        // Create lyrics based on language
+        $language = $request->language ?? 'nepali';
+
+        if ($language === 'nepali') {
+            if ($request->filled('lyrics_unicode') || $request->filled('lyrics_romanized')) {
+                Lyric::create([
+                    'song_id' => $song->id,
+                    'content_unicode' => $request->lyrics_unicode,
+                    'content_romanized' => $request->lyrics_romanized,
+                ]);
+            }
+        } elseif ($language === 'hindi') {
+            if ($request->filled('lyrics_hindi')) {
+                Lyric::create([
+                    'song_id' => $song->id,
+                    'content_unicode' => $request->lyrics_hindi,
+                    'content_romanized' => null,
+                ]);
+            }
+        } elseif ($language === 'english') {
+            if ($request->filled('lyrics_english')) {
+                Lyric::create([
+                    'song_id' => $song->id,
+                    'content_unicode' => $request->lyrics_english,
+                    'content_romanized' => null,
+                ]);
+            }
         }
 
         // Attach tags
@@ -98,9 +131,12 @@ class SongController extends Controller
             'album_id' => 'nullable|exists:albums,id',
             'year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
             'youtube_url' => 'nullable|url',
+            'language' => 'required|in:nepali,hindi,english',
             'is_published' => 'boolean',
             'lyrics_unicode' => 'nullable|string',
             'lyrics_romanized' => 'nullable|string',
+            'lyrics_hindi' => 'nullable|string',
+            'lyrics_english' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
@@ -109,25 +145,55 @@ class SongController extends Controller
 
         $song->update($validated);
 
-        // Update or create lyrics
-        if ($song->lyric) {
-            $song->lyric->update([
-                'content_unicode' => $request->lyrics_unicode,
-                'content_romanized' => $request->lyrics_romanized,
-            ]);
-        } elseif ($request->filled('lyrics_unicode') || $request->filled('lyrics_romanized')) {
-            Lyric::create([
-                'song_id' => $song->id,
-                'content_unicode' => $request->lyrics_unicode,
-                'content_romanized' => $request->lyrics_romanized,
-            ]);
+        // Update or create lyrics based on language
+        $language = $song->language ?? 'nepali';
+
+        if ($language === 'nepali') {
+            if ($song->lyric) {
+                $song->lyric->update([
+                    'content_unicode' => $request->lyrics_unicode,
+                    'content_romanized' => $request->lyrics_romanized,
+                ]);
+            } elseif ($request->filled('lyrics_unicode') || $request->filled('lyrics_romanized')) {
+                Lyric::create([
+                    'song_id' => $song->id,
+                    'content_unicode' => $request->lyrics_unicode,
+                    'content_romanized' => $request->lyrics_romanized,
+                ]);
+            }
+        } elseif ($language === 'hindi') {
+            if ($song->lyric) {
+                $song->lyric->update([
+                    'content_unicode' => $request->lyrics_hindi,
+                    'content_romanized' => null,
+                ]);
+            } elseif ($request->filled('lyrics_hindi')) {
+                Lyric::create([
+                    'song_id' => $song->id,
+                    'content_unicode' => $request->lyrics_hindi,
+                    'content_romanized' => null,
+                ]);
+            }
+        } elseif ($language === 'english') {
+            if ($song->lyric) {
+                $song->lyric->update([
+                    'content_unicode' => $request->lyrics_english,
+                    'content_romanized' => null,
+                ]);
+            } elseif ($request->filled('lyrics_english')) {
+                Lyric::create([
+                    'song_id' => $song->id,
+                    'content_unicode' => $request->lyrics_english,
+                    'content_romanized' => null,
+                ]);
+            }
         }
 
         // Sync tags
         if ($request->filled('tags')) {
             $song->tags()->sync($request->tags);
         } else {
-            $song->tags()->detach();
+            $song->tags()->sync([]);
         }
 
         return redirect()->route('admin.songs.index')

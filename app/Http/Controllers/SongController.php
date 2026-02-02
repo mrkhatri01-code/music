@@ -40,12 +40,34 @@ class SongController extends Controller
         ));
     }
 
+    public function showReportForm($artistSlug, $songSlug)
+    {
+        $song = Song::where('slug', $songSlug)
+            ->whereHas('artist', function ($query) use ($artistSlug) {
+                $query->where('slug', $artistSlug);
+            })
+            ->with(['artist'])
+            ->published()
+            ->firstOrFail();
+
+        return view('report', compact('song'));
+    }
+
     public function report(Request $request, $songSlug)
     {
-        $request->validate([
+        $validation = [
             'type' => 'required|in:wrong_lyrics,copyright',
             'description' => 'nullable|string|max:1000',
-        ]);
+        ];
+
+        // Add copyright claimant fields if type is copyright
+        if ($request->type === 'copyright') {
+            $validation['claimant_name'] = 'required|string|max:255';
+            $validation['claimant_email'] = 'required|email|max:255';
+            $validation['claimant_phone'] = 'nullable|string|max:20';
+        }
+
+        $request->validate($validation);
 
         $song = Song::where('slug', $songSlug)->firstOrFail();
 
@@ -53,6 +75,9 @@ class SongController extends Controller
             'song_id' => $song->id,
             'type' => $request->type,
             'description' => $request->description,
+            'claimant_name' => $request->claimant_name,
+            'claimant_email' => $request->claimant_email,
+            'claimant_phone' => $request->claimant_phone,
         ]);
 
         return back()->with('success', 'Thank you for your report. We will review it shortly.');

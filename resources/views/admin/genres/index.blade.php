@@ -13,10 +13,20 @@
             </h1>
             <p style="color: var(--color-text-secondary); font-size: 0.875rem;">Manage music genres and categories</p>
         </div>
-        <a href="{{ route('admin.genres.create') }}" class="btn btn-primary"
-            style="display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-plus"></i> Add New Genre
-        </a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <form action="{{ route('admin.genres.index') }}" method="GET">
+                <div style="position: relative;">
+                    <input type="text" name="q" placeholder="Search genres..." value="{{ request('q') }}"
+                        style="padding: 0.5rem 1rem 0.5rem 2.2rem; border: 1px solid var(--color-border); border-radius: 99px; font-size: 0.875rem; width: 250px; outline: none;">
+                    <i class="fa-solid fa-magnifying-glass"
+                        style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: 0.8rem;"></i>
+                </div>
+            </form>
+            <a href="{{ route('admin.genres.create') }}" class="btn btn-primary"
+                style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-plus"></i> Add New Genre
+            </a>
+        </div>
     </div>
 
     {{-- Stats Summary Cards --}}

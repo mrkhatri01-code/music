@@ -53,7 +53,20 @@
     <div class="card-modern">
         <div class="card-header-modern">
             <h2><i class="fa-solid fa-list"></i> All Reports</h2>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5 rem; align-items: center;">
+                {{-- Filter Dropdown --}}
+                <form method="GET" action="{{ route('admin.reports.index') }}" style="margin: 0;">
+                    <select name="type" onchange="this.form.submit()"
+                        style="padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.875rem; cursor: pointer; background: white;">
+                        <option value="">All Types</option>
+                        <option value="copyright" {{ request('type') == 'copyright' ? 'selected' : '' }}>
+                            <i class="fa-solid fa-copyright"></i> Copyright Claims
+                        </option>
+                        <option value="wrong_lyrics" {{ request('type') == 'wrong_lyrics' ? 'selected' : '' }}>
+                            Wrong Lyrics
+                        </option>
+                    </select>
+                </form>
                 <span class="badge badge-info">{{ $reports->total() }} total</span>
             </div>
         </div>
@@ -62,9 +75,10 @@
             <table class="modern-table">
                 <thead>
                     <tr>
-                        <th style="width: 25%;">Song</th>
+                        <th style="width: 20%;">Song</th>
                         <th>Type</th>
-                        <th style="width: 30%;">Description</th>
+                        <th style="width: 25%;">Description</th>
+                        <th>Contact Info</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th style="text-align: right;">Action</th>
@@ -85,9 +99,9 @@
                                     <span class="badge badge-danger">
                                         <i class="fa-solid fa-copyright"></i> Copyright
                                     </span>
-                                @elseif($report->type == 'incorrect_lyrics')
+                                @elseif($report->type == 'wrong_lyrics')
                                     <span class="badge badge-warning">
-                                        <i class="fa-solid fa-spell-check"></i> Incorrect Lyrics
+                                        <i class="fa-solid fa-spell-check"></i> Wrong Lyrics
                                     </span>
                                 @else
                                     <span class="badge" style="background: #f3f4f6; color: #6b7280;">
@@ -99,6 +113,31 @@
                                 <div style="font-size: 0.875rem; color: var(--color-text-secondary);">
                                     {{ Str::limit($report->description, 60) }}
                                 </div>
+                            </td>
+                            <td>
+                                @if($report->type == 'copyright' && $report->claimant_name)
+                                    <div style="font-size: 0.8rem;">
+                                        <div style="font-weight: 600; color: var(--color-text-primary);">
+                                            <i class="fa-solid fa-user" style="color: #667eea;"></i>
+                                            {{ $report->claimant_name }}
+                                        </div>
+                                        <div style="color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                            <i class="fa-solid fa-envelope" style="color: #667eea;"></i>
+                                            <a href="mailto:{{ $report->claimant_email }}"
+                                                style="color: inherit; text-decoration: none;">
+                                                {{ $report->claimant_email }}
+                                            </a>
+                                        </div>
+                                        @if($report->claimant_phone)
+                                            <div style="color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                                <i class="fa-solid fa-phone" style="color: #667eea;"></i>
+                                                {{ $report->claimant_phone }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @else
+                                    <span style="color: var(--color-text-secondary); font-size: 0.875rem;">—</span>
+                                @endif
                             </td>
                             <td style="color: var(--color-text-secondary);">
                                 {{ $report->created_at->format('M d, Y') }}
@@ -147,7 +186,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="empty-state-table">
+                            <td colspan="7" class="empty-state-table">
                                 <i class="fa-solid fa-flag"></i>
                                 <p>No reports found</p>
                             </td>
@@ -159,7 +198,7 @@
 
         @if($reports->hasPages())
             <div style="padding: 1.5rem; border-top: 1px solid var(--color-divider);">
-                {{ $reports->links() }}
+                {{ $reports->appends(request()->all())->links() }}
             </div>
         @endif
     </div>

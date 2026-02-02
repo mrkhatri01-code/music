@@ -48,6 +48,16 @@
                     placeholder="<script>...</script>">{{ old('ad_footer', $settings['ad_footer']) }}</textarea>
             </div>
 
+            <div class="form-group">
+                <label for="lyrics_fixed_ad">Lyrics Page Fixed Ad (Sticky Bottom-Right)</label>
+                <textarea id="lyrics_fixed_ad" name="lyrics_fixed_ad" class="form-control" rows="4"
+                    placeholder="<script>...</script>">{{ old('lyrics_fixed_ad', $settings['lyrics_fixed_ad'] ?? '') }}</textarea>
+                <small style="color: #718096; display: block; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-circle-info"></i> This ad will appear as a fixed/sticky element on the
+                    bottom-right corner of lyrics pages. Users can close it.
+                </small>
+            </div>
+
             <h3 style="margin: 2rem 0 1rem; border-top: 1px solid #e2e8f0; padding-top: 2rem;">Personal Popup Ad</h3>
 
             <div class="form-group">
@@ -78,6 +88,19 @@
                         placeholder="https://example.com/offer">
                     <small style="color: #718096;">Where should user go when clicking the image?</small>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="ad_popup_pages">Show Popup On</label>
+                <select id="ad_popup_pages" name="ad_popup_pages" class="form-control">
+                    <option value="all" {{ old('ad_popup_pages', $settings['ad_popup_pages'] ?? 'all') == 'all' ? 'selected' : '' }}>All Pages</option>
+                    <option value="homepage" {{ old('ad_popup_pages', $settings['ad_popup_pages'] ?? 'all') == 'homepage' ? 'selected' : '' }}>Homepage Only</option>
+                    <option value="lyrics" {{ old('ad_popup_pages', $settings['ad_popup_pages'] ?? 'all') == 'lyrics' ? 'selected' : '' }}>Lyrics Pages Only</option>
+                    <option value="artists" {{ old('ad_popup_pages', $settings['ad_popup_pages'] ?? 'all') == 'artists' ? 'selected' : '' }}>Artist Pages Only</option>
+                </select>
+                <small style="color: #718096; display: block; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-circle-info"></i> Choose which pages the popup ad should appear on
+                </small>
             </div>
 
             <button type="submit" class="btn btn-primary">

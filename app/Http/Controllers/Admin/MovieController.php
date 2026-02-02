@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class MovieController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movie::withCount('songs')->paginate(20);
+        $query = Movie::withCount('songs');
+
+        if ($request->has('q')) {
+            $q = $request->q;
+            $query->where('name', 'like', "%{$q}%");
+        }
+
+        $movies = $query->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->appends($request->all());
+
         return view('admin.movies.index', compact('movies'));
     }
 

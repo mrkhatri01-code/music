@@ -86,9 +86,11 @@ class SettingsController extends Controller
             'ad_mid2' => SiteSetting::get('ad_mid2', ''),
             'ad_sidebar' => SiteSetting::get('ad_sidebar', ''),
             'ad_footer' => SiteSetting::get('ad_footer', ''),
+            'lyrics_fixed_ad' => SiteSetting::get('lyrics_fixed_ad', ''),
             'ad_popup_active' => SiteSetting::get('ad_popup_active', 0),
             'ad_popup_image' => SiteSetting::get('ad_popup_image', ''),
             'ad_popup_link' => SiteSetting::get('ad_popup_link', ''),
+            'ad_popup_pages' => SiteSetting::get('ad_popup_pages', 'all'),
         ];
 
         return view('admin.settings.ads', compact('settings'));
@@ -102,9 +104,11 @@ class SettingsController extends Controller
             'ad_mid2' => 'nullable|string',
             'ad_sidebar' => 'nullable|string',
             'ad_footer' => 'nullable|string',
+            'lyrics_fixed_ad' => 'nullable|string',
             'ad_popup_link' => 'nullable|url',
             'ad_popup_image' => 'nullable|image|max:2048',
-            'ad_popup_active' => 'nullable|boolean', // boolean validation works for checkbox "1" or true/false/0/1
+            'ad_popup_active' => 'nullable|boolean',
+            'ad_popup_pages' => 'nullable|in:all,homepage,lyrics,artists',
         ]);
 
         // Handle Popup Image Upload
@@ -134,11 +138,16 @@ class SettingsController extends Controller
             ->with('success', 'Ad settings updated successfully!');
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
-        $reports = Report::with('song')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = Report::with('song.artist');
+
+        // Filter by type if specified
+        if ($request->has('type') && in_array($request->type, ['copyright', 'wrong_lyrics'])) {
+            $query->where('type', $request->type);
+        }
+
+        $reports = $query->orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.settings.reports', compact('reports'));
     }

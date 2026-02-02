@@ -57,6 +57,14 @@
 @endpush
 
 @section('content')
+    {{-- Success Notification --}}
+    @if(session('success'))
+        <div id="successToast" style="position: fixed; top: 80px; right: 20px; background: #48bb78; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; display: flex; align-items: center; gap: 0.75rem; animation: slideIn 0.3s ease;">
+            <i class="fa-solid fa-circle-check" style="font-size: 1.2rem;"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
     {{-- Ad after title --}}
     @php
         $midAd1 = \App\Models\SiteSetting::get('ad_mid1');
@@ -134,10 +142,10 @@
                             <i class="fa-brands fa-whatsapp"></i> Share
                         </a>
                     </div>
-                    <button onclick="document.getElementById('reportForm').style.display='block'"
-                        style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #ed8936; color: white; border: none; cursor: pointer; font-size: 0.9rem;">
+                    <a href="{{ route('song.report.form', [$song->artist->slug, $song->slug]) }}"
+                        style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #ed8936; color: white; border: none; cursor: pointer; font-size: 0.9rem; text-decoration: none; display: block; text-align: center;">
                         <i class="fa-solid fa-triangle-exclamation"></i> Report Issue
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -162,27 +170,56 @@
                         <i class="fa-solid fa-file-lines" style="margin-right: 10px; color: #667eea;"></i> Lyrics
                     </h2>
 
-                    <div style="margin-bottom: 1rem;">
-                        <button class="lyrics-toggle-btn active" onclick="showLyrics('unicode')"
-                            style="background: #667eea; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem; transition: background 0.3s;">
-                            Nepali (Unicode)
-                        </button>
-                        @if($song->lyric->content_romanized)
-                            <button class="lyrics-toggle-btn" onclick="showLyrics('romanized')"
-                                style="background: #e2e8f0; color: #4a5568; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; transition: background 0.3s;">
-                                Romanized
+                    @php
+                        $songLanguage = $song->language ?? 'nepali';
+                    @endphp
+
+                    {{-- Nepali Song: Show Unicode + Romanized Toggle --}}
+                    @if($songLanguage === 'nepali')
+                        <div style="margin-bottom: 1rem;">
+                            <button class="lyrics-toggle-btn active" onclick="showLyrics('unicode')"
+                                style="background: #667eea; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; margin-right: 0.5rem; transition: background 0.3s;">
+                                Nepali (Unicode)
                             </button>
+                            @if($song->lyric->content_romanized)
+                                <button class="lyrics-toggle-btn" onclick="showLyrics('romanized')"
+                                    style="background: #e2e8f0; color: #4a5568; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; transition: background 0.3s;">
+                                    Romanized
+                                </button>
+                            @endif
+                        </div>
+
+                        <div id="lyrics-unicode" class="lyrics-text"
+                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
+                            {{ $song->lyric->content_unicode }}</div>
+
+                        @if($song->lyric->content_romanized)
+                            <div id="lyrics-romanized" class="lyrics-text"
+                                style="display: none; font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
+                                {{ $song->lyric->content_romanized }}</div>
                         @endif
-                    </div>
+                    @endif
 
-                    <div id="lyrics-unicode" class="lyrics-text"
-                        style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-                        {{ $song->lyric->content_unicode }}</div>
+                    {{-- Hindi Song: Show Hindi Lyrics Only --}}
+                    @if($songLanguage === 'hindi')
+                        <div style="margin-bottom: 0.5rem; padding: 0.5rem 1rem; background: #f0f4ff; border-radius: 6px; display: inline-block;">
+                            <i class="fa-solid fa-language" style="color: #667eea; margin-right: 0.5rem;"></i>
+                            <span style="color: #4a5568; font-weight: 600;">Hindi</span>
+                        </div>
+                        <div class="lyrics-text"
+                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
+                            {{ $song->lyric->content_unicode }}</div>
+                    @endif
 
-                    @if($song->lyric->content_romanized)
-                        <div id="lyrics-romanized" class="lyrics-text"
-                            style="display: none; font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-                            {{ $song->lyric->content_romanized }}</div>
+                    {{-- English Song: Show English Lyrics Only --}}
+                    @if($songLanguage === 'english')
+                        <div style="margin-bottom: 0.5rem; padding: 0.5rem 1rem; background: #f0f4ff; border-radius: 6px; display: inline-block;">
+                            <i class="fa-solid fa-language" style="color: #667eea; margin-right: 0.5rem;"></i>
+                            <span style="color: #4a5568; font-weight: 600;">English</span>
+                        </div>
+                        <div class="lyrics-text"
+                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
+                            {{ $song->lyric->content_unicode }}</div>
                     @endif
                 </div>
             @else
@@ -215,35 +252,7 @@
                 </div>
             @endif
 
-            {{-- Report Form --}}
-            <div id="reportForm"
-                style="display: none; background: #fff5f5; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
-                <h3 style="margin-bottom: 1rem;">Report an Issue</h3>
-                <form action="{{ route('song.report', $song->slug) }}" method="POST">
-                    @csrf
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Issue Type:</label>
-                        <select name="type" required
-                            style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ddd;">
-                            <option value="wrong_lyrics">Wrong Lyrics</option>
-                            <option value="copyright">Copyright Claim</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Description (optional):</label>
-                        <textarea name="description" rows="3"
-                            style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ddd;"></textarea>
-                    </div>
-                    <button type="submit"
-                        style="padding: 0.75rem 1.5rem; background: #ed8936; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 0.5rem;">
-                        Submit Report
-                    </button>
-                    <button type="button" onclick="document.getElementById('reportForm').style.display='none'"
-                        style="padding: 0.75rem 1.5rem; background: #cbd5e0; border: none; border-radius: 8px; cursor: pointer;">
-                        Cancel
-                    </button>
-                </form>
-            </div>
+
 
             {{-- Related Songs Section --}}
             <div
@@ -314,6 +323,16 @@
 @endsection
 
 @push('scripts')
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+    </style>
     <script>
         function showLyrics(type) {
             document.getElementById('lyrics-unicode').style.display = type === 'unicode' ? 'block' : 'none';
@@ -329,10 +348,58 @@
             event.target.style.color = 'white';
         }
 
-        // Prevent copying lyrics
-        document.addEventListener('DOMContentLoaded', function () {
-            const lyricsContainers = document.querySelectorAll('.lyrics-text');
+        function showNotification(message, type = 'success') {
+            const colors = {
+                success: '#48bb78',
+                info: '#4299e1',
+                warning: '#ed8936',
+                error: '#f56565'
+            };
+            
+            const icons = {
+                success: 'fa-circle-check',
+                info: 'fa-circle-info',
+                warning: 'fa-triangle-exclamation',
+                error: 'fa-circle-xmark'
+            };
 
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.innerHTML = `<i class="fa-solid ${icons[type]}" style="font-size: 1.2rem;"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Auto-hide success toast
+        document.addEventListener('DOMContentLoaded', function () {
+            const successToast = document.getElementById('successToast');
+            if (successToast) {
+                setTimeout(() => {
+                    successToast.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => successToast.remove(), 300);
+                }, 4000);
+            }
+
+            // Prevent copying lyrics
+            const lyricsContainers = document.querySelectorAll('.lyrics-text');
             lyricsContainers.forEach(container => {
                 container.addEventListener('contextmenu', function (e) {
                     e.preventDefault();
@@ -366,3 +433,66 @@
         return $matches[1] ?? '';
     }
 @endphp
+
+{{-- Fixed Ad Section (Bottom-Right Sticky) --}}
+@php
+    $lyricsFixedAd = \App\Models\SiteSetting::get('lyrics_fixed_ad', '');
+@endphp
+@if($lyricsFixedAd)
+    <div id="fixedAdContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; max-width: 350px; background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); overflow: hidden; animation: slideInUp 0.5s ease; display: none;">
+        {{-- Close Button --}}
+        <button onclick="closeFixedAd()" style="position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border: none; background: rgba(0,0,0,0.7); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.9)'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'; this.style.transform='scale(1)'">
+            <i class="fa-solid fa-xmark" style="font-size: 1.2rem;"></i>
+        </button>
+        
+        {{-- Ad Content --}}
+        <div style="padding: 1rem;">
+            {!! $lyricsFixedAd !!}
+        </div>
+    </div>
+
+    <style>
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Hide on mobile */
+        @media (max-width: 768px) {
+            #fixedAdContainer {
+                display: none !important;
+            }
+        }
+
+        /* Show on desktop after delay */
+        @media (min-width: 769px) {
+            #fixedAdContainer {
+                display: block;
+            }
+        }
+    </style>
+
+    <script>
+        // Show ad after 2 seconds
+        setTimeout(function() {
+            const adContainer = document.getElementById('fixedAdContainer');
+            if (adContainer && window.innerWidth > 768) {
+                adContainer.style.display = 'block';
+            }
+        }, 2000);
+
+        function closeFixedAd() {
+            const adContainer = document.getElementById('fixedAdContainer');
+            adContainer.style.animation = 'slideInUp 0.3s ease reverse';
+            setTimeout(() => {
+                adContainer.style.display = 'none';
+            }, 300);
+        }
+    </script>
+@endif

@@ -70,7 +70,8 @@
                 <div class="song-title">{{ $song->title_nepali }}</div>
                 <div class="song-artist">{{ $song->artist->name_english }}</div>
                 <div class="song-meta">
-                    {{ $song->created_at->diffForHumans() }}
+                    <i class="fa-solid fa-eye"></i> {{ number_format($song->views_count) }}
+                    | {{ $song->created_at->diffForHumans() }}
                     @if($song->year) | {{ $song->year }} @endif
                 </div>
             </a>

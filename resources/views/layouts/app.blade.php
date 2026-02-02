@@ -148,10 +148,20 @@
             color: var(--color-text-primary);
             line-height: var(--line-height-normal);
             font-size: var(--font-size-base);
+            overflow-x: hidden;
         }
 
         .nepali-text {
             font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif;
+        }
+
+        /* Hide bottom nav by default (Desktop) */
+        .bottom-nav {
+            display: none;
+        }
+
+        .search-overlay {
+            display: none;
         }
 
         .container {
@@ -171,6 +181,8 @@
             top: 0;
             z-index: 100;
         }
+
+
 
         header .container {
             display: flex;
@@ -236,6 +248,58 @@
             width: 100%;
         }
 
+        /* Mobile Search Toggle (Hidden on Desktop) */
+        .mobile-search-toggle {
+            display: none;
+        }
+
+        /* Desktop Search Bar */
+        .desktop-search {
+            flex: 1;
+            max-width: 350px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .desktop-search form {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .desktop-search input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.8rem;
+            border-radius: 99px;
+            border: 1px solid transparent;
+            background: #f1f5f9;
+            font-size: 0.95rem;
+            color: var(--color-text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .desktop-search input:focus {
+            background: white;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .desktop-search button {
+            position: absolute;
+            left: 12px;
+            background: none;
+            border: none;
+            color: #a0aec0;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .desktop-search input:focus+button {
+            color: var(--color-primary);
+        }
+
         /* Mobile Menu Toggle (Hamburger) */
         .mobile-menu-toggle {
             display: none;
@@ -280,68 +344,241 @@
 
         /* Mobile Navigation Styles */
         @media (max-width: 768px) {
-            .mobile-menu-toggle {
+
+            /* Hide Desktop/Old Mobile Elements */
+            #mainNav,
+            .mobile-overlay,
+            .desktop-search {
+                display: none !important;
+            }
+
+            /* Header Layout: Logo Left, Search Right */
+            header .container {
+                justify-content: space-between !important;
+                padding: 0 1rem;
+            }
+
+            /* Mobile Search Toggle Button */
+            .mobile-search-toggle {
                 display: flex;
-            }
-
-            nav {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background: white;
-                box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-                transition: right 0.3s ease;
-                z-index: 1002;
-                overflow-y: auto;
-                padding-top: 70px;
-            }
-
-            nav.active {
-                right: 0;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 0;
-                padding: 1rem 0;
-            }
-
-            nav ul li {
-                width: 100%;
-                border-bottom: 1px solid #eee;
-            }
-
-            nav ul li a {
-                display: block;
-                padding: 1.25rem 1.5rem;
-                font-size: 1rem;
-                width: 100%;
-                color: var(--color-text-primary);
-            }
-
-            nav a::after {
-                display: none;
-            }
-
-            nav a:hover {
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
                 background: #f7fafc;
-                transform: none;
+                border: none;
+                color: #4a5568;
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            .mobile-search-toggle:hover {
+                background: #edf2f7;
                 color: var(--color-primary);
             }
 
-            /* Mobile Overlay */
-            body.menu-open::after {
-                content: '';
+            /* Full Screen Search Overlay */
+            .search-overlay {
                 position: fixed;
                 top: 0;
                 left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 1001;
+                width: 100%;
+                height: 100%;
+                background: white;
+                z-index: 2000;
+                display: flex;
+                flex-direction: column;
+                padding: 1rem;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.2s ease;
+                transform: translateY(-10px);
             }
+
+            .search-overlay.active {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .close-search {
+                align-self: flex-end;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: #718096;
+                padding: 0.5rem;
+                cursor: pointer;
+                margin-bottom: 1rem;
+            }
+
+            .mobile-search-form {
+                display: flex;
+                border-bottom: 2px solid var(--color-primary);
+                padding-bottom: 0.5rem;
+                width: 100%;
+            }
+
+            .mobile-search-form input {
+                flex: 1;
+                border: none;
+                font-size: 1.2rem;
+                outline: none;
+                padding: 0.5rem;
+            }
+
+            .mobile-search-form button {
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                color: var(--color-primary);
+            }
+
+            .search-suggestions {
+                margin-top: 2rem;
+                color: #718096;
+                font-size: 0.95rem;
+            }
+
+            .search-suggestions a {
+                color: var(--color-primary);
+                text-decoration: none;
+                margin: 0 0.2rem;
+            }
+
+            /* Prevent content behind fixed nav (Moved to Footer) */
+            body {
+                padding-bottom: 0;
+            }
+
+            /* Bottom Navigation Bar */
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 65px;
+                background: var(--color-surface);
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border-top: 1px solid var(--color-border);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+                z-index: 1000;
+            }
+
+            .nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                color: var(--color-text-secondary);
+                font-size: 11px;
+                padding: 4px 0;
+                height: 100%;
+                background: none;
+                border: none;
+                cursor: pointer;
+                position: relative;
+            }
+
+            .nav-item i {
+                font-size: 20px;
+                margin-bottom: 4px;
+                transition: transform 0.2s;
+            }
+
+            .nav-item.active {
+                color: var(--color-primary);
+                font-weight: 600;
+            }
+
+            .nav-item.active i {
+                transform: translateY(-2px);
+            }
+
+            .nav-item.active::after {
+                content: "";
+                width: 20px;
+                height: 3px;
+                background: var(--color-primary);
+                position: absolute;
+                bottom: 6px;
+                border-radius: 2px;
+            }
+
+            /* More Dropdown */
+            .more-menu {
+                position: absolute;
+                bottom: 70px;
+                right: 16px;
+                background: var(--color-surface);
+                border-radius: var(--radius-lg);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+                padding: 8px 0;
+                width: 160px;
+                display: none;
+                z-index: 1001;
+                text-align: left;
+                border: 1px solid var(--color-border);
+            }
+
+            .more-menu::after {
+                content: '';
+                position: absolute;
+                bottom: -6px;
+                right: 24px;
+                width: 12px;
+                height: 12px;
+                background: var(--color-surface);
+                transform: rotate(45deg);
+                border-right: 1px solid var(--color-border);
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .more-menu a {
+                display: block;
+                padding: 12px 20px;
+                text-decoration: none;
+                color: var(--color-text-primary);
+                font-size: 14px;
+                border-bottom: 1px solid var(--color-divider);
+            }
+
+            .more-menu a:last-child {
+                border-bottom: none;
+            }
+
+            .more-menu a:hover {
+                background: var(--color-bg);
+                color: var(--color-primary);
+            }
+
+            .more-menu.show {
+                display: block;
+                animation: slideUp 0.2s ease forwards;
+            }
+
+            @keyframes slideUp {
+                from {
+                    transform: translateY(10px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            /* Adjustments */
+
+
+
 
             /* Mobile Hero Section */
             .search-container {
@@ -386,6 +623,65 @@
             .song-list th,
             .song-list td {
                 padding: 0.75rem 0.5rem;
+            }
+
+            /* Mobile Footer */
+            footer {
+                padding: 1.5rem 0 100px;
+                /* Reduced padding */
+                margin-top: 1rem;
+                text-align: left;
+                position: relative;
+                z-index: 1;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr !important;
+                /* Force 2 Columns override global */
+                gap: 1rem 0.5rem;
+            }
+
+            /* Brand Section (First) - Full Width */
+            .footer-section:first-child {
+                grid-column: 1 / -1;
+                text-align: center;
+                margin-bottom: 0;
+            }
+
+            /* Hide Description Text for Compactness */
+            .footer-section p {
+                display: none;
+            }
+
+            .footer-section h3 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+                color: var(--color-text-primary);
+            }
+
+            .footer-section li {
+                margin-bottom: 0.25rem;
+            }
+
+            .footer-section a {
+                font-size: 0.85rem;
+                color: var(--color-text-secondary);
+            }
+
+
+            .footer-bottom {
+                padding: 0.75rem 0.5rem;
+                padding-bottom: 90px;
+                /* Extra space for mobile bottom nav */
+                background: rgba(0, 0, 0, 0.2);
+                margin: 0 -1rem;
+                /* Full width */
+                font-size: 0.75rem;
+                color: #ffffff !important;
+                display: block !important;
+                opacity: 1 !important;
+                text-align: center;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
             }
         }
 
@@ -785,12 +1081,7 @@
                 --space-16: 3rem;
             }
 
-            header .container {
-                flex-direction: column;
-                gap: var(--space-4);
-                padding-top: var(--space-3);
-                padding-bottom: var(--space-3);
-            }
+
 
             nav ul {
                 gap: var(--space-4);
@@ -852,11 +1143,17 @@
                 @endif
             </a>
 
-            {{-- Hamburger Menu Button (Mobile Only) --}}
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            {{-- Desktop Search --}}
+            <div class="desktop-search">
+                <form action="{{ route('search') }}" method="GET">
+                    <input type="text" name="q" placeholder="Search songs, artists..." autocomplete="off">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
+            {{-- Mobile Search Toggle --}}
+            <button class="mobile-search-toggle" onclick="toggleSearch()" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
             </button>
 
             <nav id="mainNav">
@@ -874,7 +1171,7 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-                
+
                 <ul>
                     <li><a href="{{ route('home') }}">Home</a></li>
                     <li><a href="{{ route('trending') }}">Trending</a></li>
@@ -928,9 +1225,68 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Nepali Lyrics</h3>
-                    <p>Curated for Nepali music lovers worldwide — authentic lyrics, Unicode precision, and a growing
-                        collection of your favorite songs.</p>
+                    @php
+                        $siteDescription = \App\Models\SiteSetting::get('site_description', 'Curated for Nepali music lovers worldwide — authentic lyrics, Unicode precision, and a growing collection of your favorite songs.');
+                        $contactEmail = \App\Models\SiteSetting::get('contact_email', '');
+                    @endphp
+                    <h3>{{ $siteName }}</h3>
+                    <p style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                        {{ $siteDescription }}
+                    </p>
+
+                    @if($contactEmail)
+                        <div style="margin-top: 1rem;">
+                            <a href="mailto:{{ $contactEmail }}"
+                                style="color: #cbd5e0; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-envelope"></i>
+                                {{ $contactEmail }}
+                            </a>
+                        </div>
+                    @endif
+
+                    {{-- Social Links --}}
+                    @php
+                        $facebookUrl = \App\Models\SiteSetting::get('facebook_url', '');
+                        $youtubeUrl = \App\Models\SiteSetting::get('youtube_url', '');
+                        $instagramUrl = \App\Models\SiteSetting::get('instagram_url', '');
+                        $tiktokUrl = \App\Models\SiteSetting::get('tiktok_url', '');
+                    @endphp
+                    @if($facebookUrl || $youtubeUrl || $instagramUrl || $tiktokUrl)
+                        <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                            @if($facebookUrl)
+                                <a href="{{ $facebookUrl }}" target="_blank" rel="noopener noreferrer"
+                                    style="color: #cbd5e0; font-size: 1.5rem; transition: all 0.2s;"
+                                    onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#cbd5e0'"
+                                    title="Facebook">
+                                    <i class="fa-brands fa-facebook"></i>
+                                </a>
+                            @endif
+                            @if($youtubeUrl)
+                                <a href="{{ $youtubeUrl }}" target="_blank" rel="noopener noreferrer"
+                                    style="color: #cbd5e0; font-size: 1.5rem; transition: all 0.2s;"
+                                    onmouseover="this.style.color='#ff0000'" onmouseout="this.style.color='#cbd5e0'"
+                                    title="YouTube">
+                                    <i class="fa-brands fa-youtube"></i>
+                                </a>
+                            @endif
+                            @if($instagramUrl)
+                                <a href="{{ $instagramUrl }}" target="_blank" rel="noopener noreferrer"
+                                    style="color: #cbd5e0; font-size: 1.5rem; transition: all 0.2s;"
+                                    onmouseover="this.style.color='#e1306c'" onmouseout="this.style.color='#cbd5e0'"
+                                    title="Instagram">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </a>
+                            @endif
+                            @if($tiktokUrl)
+                                <a href="{{ $tiktokUrl }}" target="_blank" rel="noopener noreferrer"
+                                    style="color: #cbd5e0; font-size: 1.5rem; transition: all 0.2s;"
+                                    onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#cbd5e0'"
+                                    title="TikTok">
+                                    <i class="fa-brands fa-tiktok"></i>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
                 <div class="footer-section">
@@ -956,8 +1312,8 @@
                 </div>
             </div>
 
-            <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} Nepali Lyrics. Built with care for Nepali music lovers.</p>
+            <div class="footer-bottom" style="margin-bottom: 20px;">
+                <p>&copy; {{ date('Y') }} Nepali Lyrics. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -969,9 +1325,22 @@
         $popupActive = \App\Models\SiteSetting::get('ad_popup_active', 0);
         $popupImage = \App\Models\SiteSetting::get('ad_popup_image', '');
         $popupLink = \App\Models\SiteSetting::get('ad_popup_link', '#');
+        $popupPages = \App\Models\SiteSetting::get('ad_popup_pages', 'all');
+
+        // Determine if popup should show on current page
+        $showPopup = false;
+        if ($popupPages === 'all') {
+            $showPopup = true;
+        } elseif ($popupPages === 'homepage' && request()->routeIs('home')) {
+            $showPopup = true;
+        } elseif ($popupPages === 'lyrics' && request()->routeIs('song.show')) {
+            $showPopup = true;
+        } elseif ($popupPages === 'artists' && (request()->routeIs('artist.show') || request()->routeIs('artists.*'))) {
+            $showPopup = true;
+        }
     @endphp
 
-    @if($popupActive && $popupImage)
+    @if($popupActive && $popupImage && $showPopup)
         <div id="ad-popup-modal"
             style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
             <div style="position: relative; max-width: 90%; max-height: 90%;">
@@ -1002,41 +1371,81 @@
         </script>
     @endif
 
-    {{-- Mobile Menu Toggle Script --}}
+    {{-- Mobile Bottom Navigation --}}
+    <nav class="bottom-nav">
+        <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+
+        <a href="{{ route('trending') }}" class="nav-item {{ request()->routeIs('trending') ? 'active' : '' }}">
+            <i class="fa-solid fa-fire"></i>
+            <span>Trending</span>
+        </a>
+
+        <a href="{{ route('new') }}" class="nav-item {{ request()->routeIs('new') ? 'active' : '' }}">
+            <i class="fa-solid fa-music"></i>
+            <span>New</span>
+        </a>
+
+        <a href="{{ route('artists.top') }}" class="nav-item {{ request()->routeIs('artists*') ? 'active' : '' }}">
+            <i class="fa-solid fa-microphone"></i>
+            <span>Artists</span>
+        </a>
+
+        <div class="nav-item" id="moreNavToggle" onclick="toggleMoreMenu()" style="cursor:pointer;">
+            <i class="fa-solid fa-ellipsis"></i>
+            <span>More</span>
+
+            <div class="more-menu" id="moreMenu">
+                <a href="{{ route('album.index') }}">Albums</a>
+                <a href="{{ route('movie.index') }}">Movies</a>
+                <a href="{{ route('genre.index') }}">Genres</a>
+            </div>
+        </div>
+    </nav>
+
+    {{-- Full Screen Search Overlay --}}
+    <div id="searchOverlay" class="search-overlay">
+        <button class="close-search" onclick="toggleSearch()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="search-overlay-content">
+            <form action="{{ route('search') }}" method="GET" class="mobile-search-form">
+                <input type="text" name="q" placeholder="Search songs, artists..." id="mobileSearchInput"
+                    autocomplete="off">
+                <button type="submit" class="search-submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+            <div class="search-suggestions">
+                <p>Try: <a href="{{ route('trending') }}">Trending</a>, <a href="{{ route('new') }}">New Releases</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuToggle = document.getElementById('mobileMenuToggle');
-            const mainNav = document.getElementById('mainNav');
-            const body = document.body;
+        function toggleMoreMenu() {
+            const menu = document.getElementById('moreMenu');
+            if (menu) menu.classList.toggle('show');
+        }
 
-            if (menuToggle && mainNav) {
-                // Toggle menu on button click
-                menuToggle.addEventListener('click', function () {
-                    menuToggle.classList.toggle('active');
-                    mainNav.classList.toggle('active');
-                    body.classList.toggle('menu-open');
-                });
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            const input = document.getElementById('mobileSearchInput');
+            if (overlay) {
+                overlay.classList.toggle('active');
+                if (overlay.classList.contains('active') && input) {
+                    setTimeout(() => input.focus(), 100);
+                }
+            }
+        }
 
-                // Close menu when clicking on a link
-                const navLinks = mainNav.querySelectorAll('a');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', function () {
-                        menuToggle.classList.remove('active');
-                        mainNav.classList.remove('active');
-                        body.classList.remove('menu-open');
-                    });
-                });
-
-                // Close menu when clicking outside (on overlay)
-                document.addEventListener('click', function (event) {
-                    if (body.classList.contains('menu-open') &&
-                        !mainNav.contains(event.target) &&
-                        !menuToggle.contains(event.target)) {
-                        menuToggle.classList.remove('active');
-                        mainNav.classList.remove('active');
-                        body.classList.remove('menu-open');
-                    }
-                });
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            const toggle = document.getElementById('moreNavToggle');
+            const menu = document.getElementById('moreMenu');
+            if (menu && toggle && !toggle.contains(e.target) && menu.classList.contains('show')) {
+                menu.classList.remove('show');
             }
         });
     </script>

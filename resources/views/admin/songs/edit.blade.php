@@ -105,15 +105,56 @@
         
         <h3 style="margin: 2rem 0 1rem;">Lyrics</h3>
         
+        {{-- Language Display (Read-only) --}}
         <div class="form-group">
-            <label for="lyrics_unicode">Lyrics (Nepali Unicode) *</label>
-            <textarea id="lyrics_unicode" name="lyrics_unicode" class="form-control" rows="15" required placeholder="Enter Nepali lyrics in Unicode...">{{ old('lyrics_unicode', $song->lyric ?->content_unicode) }}</textarea>
+            <label for="language_display">Song Language</label>
+            <input type="text" id="language_display" class="form-control" 
+                value="{{ ucfirst($song->language ?? 'nepali') }}" 
+                disabled
+                style="background: #f7fafc; cursor: not-allowed;">
+            {{-- Hidden field to submit language --}}
+            <input type="hidden" name="language" value="{{ $song->language ?? 'nepali' }}">
+            <small style="color: #718096; display: block; margin-top: 0.5rem;">
+                <i class="fa-solid fa-lock"></i> Language cannot be changed after song creation
+            </small>
         </div>
-        
-        <div class="form-group">
-            <label for="lyrics_romanized">Lyrics (Romanized)</label>
-            <textarea id="lyrics_romanized" name="lyrics_romanized" class="form-control" rows="15" placeholder="Enter romanized lyrics (optional)...">{{ old('lyrics_romanized', $song->lyric?->content_romanized) }}</textarea>
-        </div>
+
+        @php
+            $songLanguage = $song->language ?? 'nepali';
+        @endphp
+
+        {{-- Nepali Lyrics Fields --}}
+        @if($songLanguage === 'nepali')
+            <div class="form-group">
+                <label for="lyrics_unicode">Lyrics (Nepali Unicode) *</label>
+                <textarea id="lyrics_unicode" name="lyrics_unicode" class="form-control" rows="15" required 
+                    placeholder="Enter Nepali lyrics in Unicode...">{{ old('lyrics_unicode', $song->lyric?->content_unicode) }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="lyrics_romanized">Lyrics (Romanized)</label>
+                <textarea id="lyrics_romanized" name="lyrics_romanized" class="form-control" rows="15" 
+                    placeholder="Enter romanized lyrics (optional)...">{{ old('lyrics_romanized', $song->lyric?->content_romanized) }}</textarea>
+            </div>
+        @endif
+
+        {{-- Hindi Lyrics Field --}}
+        @if($songLanguage === 'hindi')
+            <div class="form-group">
+                <label for="lyrics_hindi">Lyrics (Hindi) *</label>
+                <textarea id="lyrics_hindi" name="lyrics_hindi" class="form-control" rows="15" required
+                    placeholder="Enter Hindi lyrics...">{{ old('lyrics_hindi', $song->lyric?->content_unicode) }}</textarea>
+            </div>
+        @endif
+
+        {{-- English Lyrics Field --}}
+        @if($songLanguage === 'english')
+            <div class="form-group">
+                <label for="lyrics_english">Lyrics (English) *</label>
+                <textarea id="lyrics_english" name="lyrics_english" class="form-control" rows="15" required
+                    placeholder="Enter English lyrics...">{{ old('lyrics_english', $song->lyric?->content_unicode) }}</textarea>
+            </div>
+        @endif
         
         <div class="form-group">
             <label class="checkbox-label">
