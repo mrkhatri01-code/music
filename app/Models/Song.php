@@ -197,10 +197,10 @@ class Song extends Model
 
         return $query->published()
             ->withCount([
-                'views' => function ($q) use ($date) {
+                'views as period_views_count' => function ($q) use ($date) {
                     $q->where('created_at', '>=', $date);
                 }
             ])
-            ->orderBy('views_count', 'desc');
+            ->orderBy('period_views_count', 'desc');
     }
 }
