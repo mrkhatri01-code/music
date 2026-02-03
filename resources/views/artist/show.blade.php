@@ -11,40 +11,40 @@
 
 @push('structured-data')
     <script type="application/ld+json">
-                                    {
-                                        "@context": "https://schema.org",
-                                        "@type": "MusicGroup",
-                                        "name": "{{ $artist->name_english }}",
-                                        "alternateName": "{{ $artist->name_nepali }}",
-                                        @if($artist->bio)
-                                            "description": "{{ $artist->bio }}",
-                                        @endif
-                                        "url": "{{ route('artist.show', $artist->slug) }}"
-                                    }
-                                    </script>
+                                                                                                            {
+                                                                                                                "@context": "https://schema.org",
+                                                                                                                "@type": "MusicGroup",
+                                                                                                                "name": "{{ $artist->name_english }}",
+                                                                                                                "alternateName": "{{ $artist->name_nepali }}",
+                                                                                                                @if($artist->bio)
+                                                                                                                    "description": "{{ $artist->bio }}",
+                                                                                                                @endif
+                                                                                                                "url": "{{ route('artist.show', $artist->slug) }}"
+                                                                                                            }
+                                                                                                            </script>
 
     <script type="application/ld+json">
-                                    {
-                                        "@context": "https://schema.org",
-                                        "@type": "BreadcrumbList",
-                                        "itemListElement": [{
-                                            "@type": "ListItem",
-                                            "position": 1,
-                                            "name": "Home",
-                                            "item": "{{ route('home') }}"
-                                        },{
-                                            "@type": "ListItem",
-                                            "position": 2,
-                                            "name": "Artists",
-                                            "item": "{{ route('artists.top') }}"
-                                        },{
-                                            "@type": "ListItem",
-                                            "position": 3,
-                                            "name": "{{ $artist->name_english }}",
-                                            "item": "{{ route('artist.show', $artist->slug) }}"
-                                        }]
-                                    }
-                                    </script>
+                                                                                                            {
+                                                                                                                "@context": "https://schema.org",
+                                                                                                                "@type": "BreadcrumbList",
+                                                                                                                "itemListElement": [{
+                                                                                                                    "@type": "ListItem",
+                                                                                                                    "position": 1,
+                                                                                                                    "name": "Home",
+                                                                                                                    "item": "{{ route('home') }}"
+                                                                                                                },{
+                                                                                                                    "@type": "ListItem",
+                                                                                                                    "position": 2,
+                                                                                                                    "name": "Artists",
+                                                                                                                    "item": "{{ route('artists.top') }}"
+                                                                                                                },{
+                                                                                                                    "@type": "ListItem",
+                                                                                                                    "position": 3,
+                                                                                                                    "name": "{{ $artist->name_english }}",
+                                                                                                                    "item": "{{ route('artist.show', $artist->slug) }}"
+                                                                                                                }]
+                                                                                                            }
+                                                                                                            </script>
 @endpush
 
 @section('content')
@@ -85,21 +85,56 @@
 
         .social-links {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .social-links a {
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            transition: background 0.3s;
+            border-radius: 50%;
+            transition: all 0.3s;
+            font-size: 1.1rem;
         }
 
         .social-links a:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .social-links a.youtube:hover {
+            background: rgba(255, 0, 0, 0.8);
+        }
+
+        .social-links a.facebook:hover {
+            background: rgba(24, 119, 242, 0.8);
+        }
+
+        .social-links a.instagram:hover {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .social-links a.tiktok:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .social-links a.spotify:hover {
+            background: rgba(30, 215, 96, 0.8);
+        }
+
+        .social-links a.apple-music:hover {
+            background: rgba(252, 61, 57, 0.8);
+        }
+
+        .social-links a.website:hover {
+            background: rgba(99, 102, 241, 0.8);
         }
 
         .songs-section {
@@ -204,31 +239,36 @@
             }
 
             .artist-mobile-name {
-                margin-left: 120px;
-                min-height: 50px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
+                padding-top: 0;
                 margin-bottom: 0.5rem;
-                padding-top: 0.5rem;
+                padding-left: 105px;
             }
 
             .artist-mobile-name h1 {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
                 margin: 0;
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
                 line-height: 1.2;
                 color: #2d3748;
+                font-weight: 600;
+                white-space: nowrap;
+                max-width: 100%;
+            }
+
+            .artist-mobile-name h1>span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
 
             .artist-mobile-stats {
                 margin-top: 1.5rem;
                 display: flex;
-                gap: 2rem;
+                gap: 1.5rem;
                 color: #718096;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
                 border-bottom: 1px solid #edf2f7;
                 padding-bottom: 1rem;
                 margin-bottom: 1rem;
@@ -239,6 +279,48 @@
                 background: #f7fafc;
                 color: #4a5568;
                 border: 1px solid #e2e8f0;
+            }
+
+            .artist-content-card .social-links a.youtube:hover {
+                background: rgba(255, 0, 0, 0.1);
+                color: #ff0000;
+                border-color: #ff0000;
+            }
+
+            .artist-content-card .social-links a.facebook:hover {
+                background: rgba(24, 119, 242, 0.1);
+                color: #1877f2;
+                border-color: #1877f2;
+            }
+
+            .artist-content-card .social-links a.instagram:hover {
+                background: linear-gradient(45deg, rgba(240, 148, 51, 0.1) 0%, rgba(230, 104, 60, 0.1) 100%);
+                color: #e1306c;
+                border-color: #e1306c;
+            }
+
+            .artist-content-card .social-links a.tiktok:hover {
+                background: rgba(0, 0, 0, 0.1);
+                color: #000;
+                border-color: #000;
+            }
+
+            .artist-content-card .social-links a.spotify:hover {
+                background: rgba(30, 215, 96, 0.1);
+                color: #1ed760;
+                border-color: #1ed760;
+            }
+
+            .artist-content-card .social-links a.apple-music:hover {
+                background: rgba(252, 61, 57, 0.1);
+                color: #fc3d39;
+                border-color: #fc3d39;
+            }
+
+            .artist-content-card .social-links a.website:hover {
+                background: rgba(99, 102, 241, 0.1);
+                color: #6366f1;
+                border-color: #6366f1;
             }
         }
     </style>
@@ -259,12 +341,12 @@
 
             <div class="artist-mobile-name">
                 <h1>
-                    {{ $artist->name_english }}
+                    <span>{{ $artist->name_english }}</span>
                     @if($artist->is_verified)
-                        <i class="fa-solid fa-circle-check" style="color: #4ade80; font-size: 1.2rem;"></i>
+                        <i class="fa-solid fa-circle-check" style="color: #4ade80; font-size: 1rem; flex-shrink: 0;"></i>
                     @endif
                 </h1>
-                <div style="font-size: 0.9rem; color: #718096;">{{ $artist->name_nepali }}</div>
+                <div style="font-size: 0.8rem; color: #718096;">{{ $artist->name_nepali }}</div>
             </div>
 
             <div class="artist-mobile-stats">
@@ -274,26 +356,51 @@
                 <div>
                     <span style="font-weight: 700; color: #2d3748;">{{ number_format($artist->views_count) }}</span> Views
                 </div>
+                @if($artist->age)
+                    <div>
+                        <span style="font-weight: 700; color: #2d3748;">{{ $artist->age }}</span> Years Old
+                    </div>
+                @endif
             </div>
 
             @if($artist->social_links)
                 <div class="social-links"
-                    style="margin-top: 0; margin-bottom: 0; overflow-x: auto; padding-bottom: 0.5rem; justify-content: flex-start;">
-                    @if(isset($artist->social_links['youtube']))
-                        <a href="{{ $artist->social_links['youtube'] }}" target="_blank"><i class="fa-brands fa-youtube"></i>
-                            YouTube</a>
+                    style="margin-top: 0; margin-bottom: 0; padding-bottom: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, 40px); gap: 0.75rem; max-width: 100%;">
+                    @if(isset($artist->social_links['youtube']) && $artist->social_links['youtube'])
+                        <a href="{{ $artist->social_links['youtube'] }}" target="_blank" class="youtube" title="YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
                     @endif
-                    @if(isset($artist->social_links['facebook']))
-                        <a href="{{ $artist->social_links['facebook'] }}" target="_blank"><i class="fa-brands fa-facebook"></i>
-                            Facebook</a>
+                    @if(isset($artist->social_links['facebook']) && $artist->social_links['facebook'])
+                        <a href="{{ $artist->social_links['facebook'] }}" target="_blank" class="facebook" title="Facebook">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
                     @endif
-                    @if(isset($artist->social_links['instagram']))
-                        <a href="{{ $artist->social_links['instagram'] }}" target="_blank"><i class="fa-brands fa-instagram"></i>
-                            Instagram</a>
+                    @if(isset($artist->social_links['instagram']) && $artist->social_links['instagram'])
+                        <a href="{{ $artist->social_links['instagram'] }}" target="_blank" class="instagram" title="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
                     @endif
-                    @if(isset($artist->social_links['spotify']))
-                        <a href="{{ $artist->social_links['spotify'] }}" target="_blank"><i class="fa-brands fa-spotify"></i>
-                            Spotify</a>
+                    @if(isset($artist->social_links['tiktok']) && $artist->social_links['tiktok'])
+                        <a href="{{ $artist->social_links['tiktok'] }}" target="_blank" class="tiktok" title="TikTok">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['spotify']) && $artist->social_links['spotify'])
+                        <a href="{{ $artist->social_links['spotify'] }}" target="_blank" class="spotify" title="Spotify">
+                            <i class="fa-brands fa-spotify"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['apple_music']) && $artist->social_links['apple_music'])
+                        <a href="{{ $artist->social_links['apple_music'] }}" target="_blank" class="apple-music"
+                            title="Apple Music">
+                            <i class="fa-brands fa-apple"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['website']) && $artist->social_links['website'])
+                        <a href="{{ $artist->social_links['website'] }}" target="_blank" class="website" title="Website">
+                            <i class="fa-solid fa-globe"></i>
+                        </a>
                     @endif
                 </div>
             @endif
@@ -312,33 +419,58 @@
             @endif
         </div>
         <div class="artist-info">
-            <h1>{{ $artist->name_english }}</h1>
+            <h1>
+                {{ $artist->name_english }}
+                @if($artist->is_verified)
+                    <i class="fa-solid fa-circle-check" style="color: #4ade80; font-size: 2rem; margin-left: 0.5rem;"></i>
+                @endif
+            </h1>
             <div class="subtitle">{{ $artist->name_nepali }}</div>
             <div style="font-size: 0.95rem; opacity: 0.9;">
                 <i class="fa-solid fa-music"></i> {{ $artist->songs->count() }} songs | <i class="fa-solid fa-eye"></i>
                 {{ number_format($artist->views_count) }} views
-                @if($artist->is_verified)
-                    | <i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> Verified
+                @if($artist->age)
+                    | <i class="fa-solid fa-cake-candles"></i> {{ $artist->age }} years old
                 @endif
             </div>
 
             @if($artist->social_links)
                 <div class="social-links">
-                    @if(isset($artist->social_links['youtube']))
-                        <a href="{{ $artist->social_links['youtube'] }}" target="_blank"><i class="fa-brands fa-youtube"></i>
-                            YouTube</a>
+                    @if(isset($artist->social_links['youtube']) && $artist->social_links['youtube'])
+                        <a href="{{ $artist->social_links['youtube'] }}" target="_blank" class="youtube" title="YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
                     @endif
-                    @if(isset($artist->social_links['facebook']))
-                        <a href="{{ $artist->social_links['facebook'] }}" target="_blank"><i class="fa-brands fa-facebook"></i>
-                            Facebook</a>
+                    @if(isset($artist->social_links['facebook']) && $artist->social_links['facebook'])
+                        <a href="{{ $artist->social_links['facebook'] }}" target="_blank" class="facebook" title="Facebook">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
                     @endif
-                    @if(isset($artist->social_links['instagram']))
-                        <a href="{{ $artist->social_links['instagram'] }}" target="_blank"><i class="fa-brands fa-instagram"></i>
-                            Instagram</a>
+                    @if(isset($artist->social_links['instagram']) && $artist->social_links['instagram'])
+                        <a href="{{ $artist->social_links['instagram'] }}" target="_blank" class="instagram" title="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
                     @endif
-                    @if(isset($artist->social_links['spotify']))
-                        <a href="{{ $artist->social_links['spotify'] }}" target="_blank"><i class="fa-brands fa-spotify"></i>
-                            Spotify</a>
+                    @if(isset($artist->social_links['tiktok']) && $artist->social_links['tiktok'])
+                        <a href="{{ $artist->social_links['tiktok'] }}" target="_blank" class="tiktok" title="TikTok">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['spotify']) && $artist->social_links['spotify'])
+                        <a href="{{ $artist->social_links['spotify'] }}" target="_blank" class="spotify" title="Spotify">
+                            <i class="fa-brands fa-spotify"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['apple_music']) && $artist->social_links['apple_music'])
+                        <a href="{{ $artist->social_links['apple_music'] }}" target="_blank" class="apple-music"
+                            title="Apple Music">
+                            <i class="fa-brands fa-apple"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['website']) && $artist->social_links['website'])
+                        <a href="{{ $artist->social_links['website'] }}" target="_blank" class="website" title="Website">
+                            <i class="fa-solid fa-globe"></i>
+                        </a>
                     @endif
                 </div>
             @endif
@@ -353,16 +485,54 @@
         </div>
     @endif
 
+    {{-- Upcoming Songs --}}
+    @if(isset($upcomingSongs) && $upcomingSongs->count() > 0)
+        <div class="songs-section" style="margin-bottom: 2rem;">
+            <h2>Upcoming Songs <span
+                    style="font-size: 0.9rem; font-weight: normal; color: #718096; margin-left: 0.5rem;">(Lyrics Coming
+                    Soon)</span></h2>
+            <div class="songs-grid">
+                @foreach($upcomingSongs as $song)
+                    <a href="{{ route('song.show', [$artist->slug, $song->slug]) }}" class="song-item"
+                        style="border-left: 4px solid #ed8936;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div class="song-item-title">{{ $song->title_nepali }}</div>
+                            <span style="font-size: 0.7rem; color: #f59e0b; white-space: nowrap;">
+                                <i class="fa-solid fa-clock"></i> Coming Soon
+                            </span>
+                        </div>
+                        <div class="song-item-meta">
+                            {{ $song->title_english }}
+                            @if($song->release_date) | <i class="fa-solid fa-calendar-days"></i>
+                            {{ $song->release_date->format('d M, Y') }} @elseif($song->year) | <i
+                            class="fa-solid fa-calendar-days"></i> {{ $song->year }} @endif
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     {{-- Top Songs --}}
     <div class="songs-section">
         <h2>Top Songs by {{ $artist->name_english }}</h2>
         <div class="songs-grid">
             @forelse($topSongs as $song)
                 <a href="{{ route('song.show', [$artist->slug, $song->slug]) }}" class="song-item">
-                    <div class="song-item-title">{{ $song->title_nepali }}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div class="song-item-title">{{ $song->title_nepali }}</div>
+                        @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                            <span style="font-size: 0.7rem; color: #f59e0b; white-space: nowrap;">
+                                <i class="fa-solid fa-clock"></i> Coming Soon
+                            </span>
+                        @endif
+                    </div>
                     <div class="song-item-meta">
                         {{ $song->title_english }}
-                        @if($song->year) | <i class="fa-solid fa-calendar-days"></i> {{ $song->year }} @endif
+                        {{ $song->title_english }}
+                        @if($song->release_date) | <i class="fa-solid fa-calendar-days"></i>
+                        {{ $song->release_date->format('d M, Y') }} @elseif($song->year) | <i
+                        class="fa-solid fa-calendar-days"></i> {{ $song->year }} @endif
                         | <i class="fa-solid fa-eye"></i> {{ number_format($song->views_count) }} views
                     </div>
                 </a>
@@ -379,13 +549,20 @@
             <div
                 style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
                 @foreach($albums as $album)
-                    <div
-                        style="padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px;">
-                        <div style="font-weight: 600; font-size: 1.1rem;">{{ $album->name }}</div>
+                    <a href="{{ route('album.show', $album->slug) }}"
+                        style="padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; text-decoration: none; display: block; transition: transform 0.2s;">
+                        <img src="{{ $album->cover_image ? asset($album->cover_image) : asset('images/default-album.png') }}"
+                            alt="{{ $album->name }}"
+                            style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                            loading="lazy" decoding="async">
+                        <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.25rem;">{{ $album->name }}</div>
                         @if($album->year)
-                            <div style="opacity: 0.9; font-size: 0.9rem;">{{ $album->year }}</div>
+                            <div style="opacity: 0.9; font-size: 0.9rem;">
+                                <i class="fa-solid fa-calendar-days" style="margin-right: 0.25rem;"></i>
+                                {{ $album->year }}
+                            </div>
                         @endif
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>

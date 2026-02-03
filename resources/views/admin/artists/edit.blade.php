@@ -31,6 +31,13 @@
                 <textarea id="bio" name="bio" class="form-control">{{ old('bio', $artist->bio) }}</textarea>
             </div>
 
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" class="form-control"
+                    value="{{ old('date_of_birth', $artist->date_of_birth ? $artist->date_of_birth->format('Y-m-d') : '') }}">
+                <small style="color: #718096;">Used to calculate and display artist's age</small>
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                 <div class="form-group">
                     <label for="profile_image">Profile Image</label>

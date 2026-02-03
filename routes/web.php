@@ -29,6 +29,9 @@ Route::get('/trending/month', [HomeController::class, 'trendingMonth'])->name('t
 Route::get('/new', [HomeController::class, 'newSongs'])->name('new');
 Route::get('/new/{year}', [HomeController::class, 'newSongsByYear'])->name('new.year');
 
+// Upcoming Lyrics
+Route::get('/upcoming-lyrics', [PageController::class, 'upcomingSongs'])->name('upcoming');
+
 // Artists
 Route::get('/top-artists', [HomeController::class, 'topArtists'])->name('artists.top');
 Route::get('/artist/{slug}', [ArtistController::class, 'show'])->name('artist.show');
@@ -42,6 +45,7 @@ Route::get('/album/{slug}', [AlbumController::class, 'show'])->name('album.show'
 Route::get('/lyrics/{artistSlug}/{songSlug}', [SongController::class, 'show'])->name('song.show');
 Route::get('/report/{artistSlug}/{songSlug}', [SongController::class, 'showReportForm'])->name('song.report.form');
 Route::post('/song/{songSlug}/report', [SongController::class, 'report'])->name('song.report');
+Route::post('/subscribe', [\App\Http\Controllers\SubscriptionController::class, 'store'])->name('subscribe');
 
 // Genres
 Route::get('/genre', [GenreController::class, 'index'])->name('genre.index');
@@ -136,6 +140,10 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
         'destroy' => 'admin.songs.destroy',
     ]);
 
+    // Song restore and permanent delete
+    Route::post('songs/{id}/restore', [AdminSongController::class, 'restore'])->name('admin.songs.restore');
+    Route::delete('songs/{id}/force-delete', [AdminSongController::class, 'forceDelete'])->name('admin.songs.force-delete');
+
     // Genres Management
     Route::resource('genres', AdminGenreController::class)->names([
         'index' => 'admin.genres.index',
@@ -166,6 +174,7 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
 
     // Reports
     Route::get('/reports', [SettingsController::class, 'reports'])->name('admin.reports.index');
+    Route::get('/reports/{report}', [SettingsController::class, 'showReport'])->name('admin.reports.show');
     Route::post('/reports/{report}/status', [SettingsController::class, 'updateReportStatus'])->name('admin.reports.update-status');
     Route::delete('/reports/{report}', [SettingsController::class, 'destroy'])->name('admin.reports.destroy');
 
@@ -173,4 +182,11 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
     Route::get('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'index'])->name('admin.contacts.index');
     Route::patch('/contacts/{contact}/status', [\App\Http\Controllers\Admin\ContactController::class, 'updateStatus'])->name('admin.contacts.update-status');
     Route::delete('/contacts/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'destroy'])->name('admin.contacts.destroy');
+
+    // Subscriptions
+    Route::get('/subscriptions', [\App\Http\Controllers\Admin\SubscriptionController::class, 'index'])->name('admin.subscriptions.index');
+    Route::patch('/subscriptions/{subscription}/status', [\App\Http\Controllers\Admin\SubscriptionController::class, 'toggleStatus'])->name('admin.subscriptions.status');
+
+    // Visitor Tracker
+    Route::get('/visitors', [\App\Http\Controllers\Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
 });

@@ -5,21 +5,21 @@
 
 @push('structured-data')
     <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    "name": "{{ config('app.name') }}",
-                    "url": "{{ route('home') }}",
-                    "potentialAction": {
-                        "@type": "SearchAction",
-                        "target": {
-                            "@type": "EntryPoint",
-                            "urlTemplate": "{{ route('search') }}?q={search_term_string}"
-                        },
-                        "query-input": "required name=search_term_string"
-                    }
-                }
-                </script>
+                                        {
+                                            "@context": "https://schema.org",
+                                            "@type": "WebSite",
+                                            "name": "{{ config('app.name') }}",
+                                            "url": "{{ route('home') }}",
+                                            "potentialAction": {
+                                                "@type": "SearchAction",
+                                                "target": {
+                                                    "@type": "EntryPoint",
+                                                    "urlTemplate": "{{ route('search') }}?q={search_term_string}"
+                                                },
+                                                "query-input": "required name=search_term_string"
+                                            }
+                                        }
+                                        </script>
 @endpush
 
 @section('content')
@@ -35,7 +35,15 @@
             <div class="grid grid-3">
                 @foreach($trendingToday as $song)
                     <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
-                        <div class="song-title nepali-text">{{ $song->title_nepali }}</div>
+                        <div class="song-title nepali-text">
+                            {{ $song->title_nepali }}
+                            @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                                <span
+                                    style="font-size: 0.65rem; color: #f59e0b; display: inline-block; margin-left: 5px; vertical-align: middle;">
+                                    <i class="fa-solid fa-clock"></i>
+                                </span>
+                            @endif
+                        </div>
                         <div class="song-title"
                             style="font-size: 0.95rem; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
                             {{ $song->title_english }}
@@ -49,6 +57,11 @@
                                 <i class="fa-solid fa-eye"></i>
                                 {{ number_format($song->views_count) }}
                             </span>
+                            @if($song->release_date)
+                                <span style="font-size: 0.8rem; color: #a0aec0;">
+                                    <i class="fa-solid fa-calendar-days"></i> {{ $song->release_date->format('d M, Y') }}
+                                </span>
+                            @endif
                         </div>
                     </a>
                 @endforeach
@@ -85,7 +98,15 @@
             <div class="grid grid-3">
                 @foreach($trendingWeek as $song)
                     <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
-                        <div class="song-title nepali-text">{{ $song->title_nepali }}</div>
+                        <div class="song-title nepali-text">
+                            {{ $song->title_nepali }}
+                            @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                                <span
+                                    style="font-size: 0.65rem; color: #f59e0b; display: inline-block; margin-left: 5px; vertical-align: middle;">
+                                    <i class="fa-solid fa-clock"></i>
+                                </span>
+                            @endif
+                        </div>
                         <div class="song-title"
                             style="font-size: 0.95rem; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
                             {{ $song->title_english }}
@@ -125,7 +146,8 @@
                 <p class="section-intro" style="margin-top: 0;">Fresh lyrics from the latest Nepali songs</p>
             </div>
             @if($newSongs->count() > 0)
-                <a href="{{ route('new') }}" class="btn btn-outline">
+                <a href="{{ route('new') }}" class="btn btn-outline"
+                    style="white-space: nowrap; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
                     Browse All
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -150,10 +172,17 @@
                                 <i class="fa-solid fa-eye"></i>
                                 {{ number_format($song->views_count) }}
                             </span>
-                            <span class="badge badge-success">
-                                <i class="fa-solid fa-circle-check"></i>
-                                New
-                            </span>
+                            @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                                <span class="badge" style="background: #e2e8f0; color: #4a5568;">
+                                    <i class="fa-solid fa-clock"></i>
+                                    Coming Soon
+                                </span>
+                            @else
+                                <span class="badge badge-success">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    New
+                                </span>
+                            @endif
                         </div>
                     </a>
                 @endforeach
@@ -204,7 +233,8 @@
                 <p class="section-intro" style="margin-top: 0;">Voices that define Nepali music</p>
             </div>
             @if($topArtists->count() > 0)
-                <a href="{{ route('artists.top') }}" class="btn btn-outline">
+                <a href="{{ route('artists.top') }}" class="btn btn-outline"
+                    style="white-space: nowrap; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
                     View All
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -219,7 +249,7 @@
                         <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
                             @if($artist->profile_image_url)
                                 <img src="{{ $artist->profile_image_url }}" alt="{{ $artist->name_english }}"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                    style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" decoding="async">
                             @else
                                 <div
                                     style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: var(--font-weight-bold);">

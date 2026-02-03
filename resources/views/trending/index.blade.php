@@ -63,10 +63,23 @@
     <div class="songs-grid">
         @forelse($songs as $song)
             <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
-                <div class="song-title">{{ $song->title_nepali }}</div>
+                <div class="song-title">
+                    {{ $song->title_nepali }}
+                    @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                        <span
+                            style="font-size: 0.75rem; color: #f59e0b; vertical-align: middle; margin-left: 5px; font-weight: normal;">
+                            <i class="fa-solid fa-clock"></i> Coming Soon
+                        </span>
+                    @endif
+                </div>
                 <div class="song-artist">{{ $song->artist->name_english }}</div>
                 <div class="song-meta">
                     @if($song->genre) <i class="fa-solid fa-music"></i> {{ $song->genre->name }} @endif
+                    @if($song->release_date)
+                        | <i class="fa-solid fa-calendar-days"></i> {{ $song->release_date->format('d M, Y') }}
+                    @elseif($song->year)
+                        | <i class="fa-solid fa-calendar-days"></i> {{ $song->year }}
+                    @endif
                     | <i class="fa-solid fa-eye"></i> {{ number_format($song->views_count) }} views
                 </div>
             </a>

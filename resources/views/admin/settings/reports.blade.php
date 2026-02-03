@@ -159,6 +159,11 @@
                             </td>
                             <td>
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                                    <a href="{{ route('admin.reports.show', $report) }}" class="btn-icon"
+                                        style="background: #e0e7ff; color: #4338ca; display: inline-flex; width: 32px; height: 32px; border-radius: 6px; align-items: center; justify-content: center; text-decoration: none;"
+                                        title="View Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
                                     <form action="{{ route('admin.reports.update-status', $report) }}" method="POST"
                                         style="display: inline;">
                                         @csrf

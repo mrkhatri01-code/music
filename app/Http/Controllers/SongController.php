@@ -30,7 +30,10 @@ class SongController extends Controller
             ->limit(5)
             ->get();
 
-        $trendingSongs = Song::trending('week')->limit(5)->get();
+        $trendingSongs = Song::trending('week')
+            ->where('lyrics_status', '!=', 'coming_soon')
+            ->limit(5)
+            ->get();
 
         return view('song.show', compact(
             'song',

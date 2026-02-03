@@ -21,9 +21,23 @@ class ArtistController extends Controller
         // Increment artist views
         $artist->incrementViews();
 
-        $topSongs = $artist->songs->take(20);
+        // Fetch upcoming songs
+        $upcomingSongs = $artist->songs()
+            ->where('lyrics_status', 'coming_soon')
+            ->where('is_published', true)
+            ->orderBy('created_at', 'desc')
+            ->take(6)
+            ->get();
+
+        $topSongs = $artist->songs()
+            ->published() // This includes coming_soon if published, but sorted by views
+            ->where('lyrics_status', '!=', 'coming_soon') // Exclude coming soon from top songs to avoid duplication or burial
+            ->orderBy('views_count', 'desc')
+            ->take(20)
+            ->get();
+
         $albums = $artist->albums;
 
-        return view('artist.show', compact('artist', 'topSongs', 'albums'));
+        return view('artist.show', compact('artist', 'topSongs', 'upcomingSongs', 'albums'));
     }
 }

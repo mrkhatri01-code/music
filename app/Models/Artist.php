@@ -15,6 +15,7 @@ class Artist extends Model
         'name_nepali',
         'slug',
         'bio',
+        'date_of_birth',
         'profile_image',
         'cover_image',
         'social_links',
@@ -25,6 +26,7 @@ class Artist extends Model
     protected $casts = [
         'social_links' => 'array',
         'is_verified' => 'boolean',
+        'date_of_birth' => 'date',
     ];
 
     // Automatically generate slug from English name
@@ -88,5 +90,13 @@ class Artist extends Model
             return asset('storage/' . $this->cover_image);
         }
         return null;
+    }
+
+    public function getAgeAttribute()
+    {
+        if (!$this->date_of_birth) {
+            return null;
+        }
+        return $this->date_of_birth->age;
     }
 }

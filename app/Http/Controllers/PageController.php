@@ -53,6 +53,17 @@ class PageController extends Controller
         return view('pages.disclaimer');
     }
 
+    public function upcomingSongs()
+    {
+        $songs = Song::where('lyrics_status', 'coming_soon')
+            ->where('is_published', true)
+            ->with(['artist', 'album'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(30);
+
+        return view('upcoming', compact('songs'));
+    }
+
     // Mood-based pages
     public function loveSongs()
     {

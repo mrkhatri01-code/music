@@ -20,7 +20,16 @@
     @php
         $siteLogo = \App\Models\SiteSetting::get('site_logo');
         $siteName = \App\Models\SiteSetting::get('site_name', 'Nepali Lyrics');
-        $faviconUrl = $siteLogo ? asset($siteLogo) : asset('favicon.ico');
+        $mimeType = 'image/x-icon';
+        if ($siteLogo && file_exists(public_path($siteLogo))) {
+            $faviconUrl = asset($siteLogo) . '?v=' . filemtime(public_path($siteLogo));
+            $ext = pathinfo(public_path($siteLogo), PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
+                $mimeType = 'image/' . (strtolower($ext) === 'jpg' ? 'jpeg' : strtolower($ext));
+            }
+        } else {
+            $faviconUrl = asset('favicon.ico');
+        }
     @endphp
 
     <meta property="og:title" content="@yield('og_title', config('app.name'))">
@@ -28,7 +37,8 @@
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:image" content="@yield('og_image', $siteLogo ? asset($siteLogo) : asset('images/logo.png'))">
-    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+    <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     {{-- Structured Data --}}
     @stack('structured-data')
@@ -460,11 +470,13 @@
                 left: 0;
                 width: 100%;
                 height: 65px;
-                background: var(--color-surface);
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
-                border-top: 1px solid var(--color-border);
+                border-top: 1px solid var(--glass-border);
                 box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
                 z-index: 1000;
             }
@@ -499,16 +511,6 @@
 
             .nav-item.active i {
                 transform: translateY(-2px);
-            }
-
-            .nav-item.active::after {
-                content: "";
-                width: 20px;
-                height: 3px;
-                background: var(--color-primary);
-                position: absolute;
-                bottom: 6px;
-                border-radius: 2px;
             }
 
             /* More Dropdown */
@@ -1138,8 +1140,7 @@
                 @if($siteLogo)
                     <img src="{{ asset($siteLogo) }}" alt="{{ $siteName }}" style="height: 40px;">
                 @else
-                    <i class="fa-solid fa-music"></i>
-                    <span>{{ $siteName }}</span>
+                    <img src="{{ asset('images/logo.png') }}" alt="{{ $siteName }}" style="height: 40px;">
                 @endif
             </a>
 
@@ -1294,6 +1295,7 @@
                     <ul>
                         <li><a href="{{ route('trending') }}">Trending Songs</a></li>
                         <li><a href="{{ route('new') }}">New Releases</a></li>
+                        <li><a href="{{ route('upcoming') }}">Upcoming Lyrics</a></li>
                         <li><a href="{{ route('artists.top') }}">Top Artists</a></li>
                         <li><a href="{{ route('genre.index') }}">Genres</a></li>
                     </ul>
@@ -1348,26 +1350,15 @@
                     style="position: absolute; top: -15px; right: -15px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-weight: bold; color: #333;">&times;</button>
                 <a href="{{ $popupLink }}" target="_blank" onclick="closeAdPopup()">
                     <img src="{{ asset($popupImage) }}" alt="Special Offer"
-                        style="max-width: 100%; max-height: 80vh; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.5);">
+                        style="max-width: 100%; max-height: 80vh; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.5);"
+                        loading="lazy" decoding="async">
                 </a>
             </div>
         </div>
 
-        <script>
-            function showAdPopup() {
-                // Check if user has closed it in this session
-                if (!sessionStorage.getItem('ad_popup_closed')) {
-                    document.getElementById('ad-popup-modal').style.display = 'flex';
-                }
-            }
-
-            function closeAdPopup() {
-                document.getElementById('ad-popup-modal').style.display = 'none';
-                sessionStorage.setItem('ad_popup_closed', 'true');
-            }
-
-            // Show popup after 3 seconds
-            setTimeout(showAdPopup, 3000);
+        <script>         function showAdPopup() {             // Check if user has closed it in this session             if (!sessionStorage.getItem('ad_popup_closed')) {                 document.getElementById('ad-popup-modal').style.display = 'flex';             }         }
+             function closeAdPopup() {             document.getElementById('ad-popup-modal').style.display = 'none';             sessionStorage.setItem('ad_popup_closed', 'true');         }
+             // Show popup after 3 seconds         setTimeout(showAdPopup, 3000);
         </script>
     @endif
 

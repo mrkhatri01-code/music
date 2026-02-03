@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'New Nepali Songs - Latest Releases')
+@section('title', 'New Songs - Latest Releases')
 
 @section('content')
     <style>
@@ -56,7 +56,7 @@
     </style>
 
     <div class="page-header">
-        <h1>New Nepali Songs</h1>
+        <h1>New Songs</h1>
         @if(isset($year))
             <p style="opacity: 0.9;">Released in {{ $year }}</p>
         @else
@@ -67,7 +67,15 @@
     <div class="songs-grid">
         @forelse($songs as $song)
             <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
-                <div class="song-title">{{ $song->title_nepali }}</div>
+                <div class="song-title">
+                    {{ $song->title_nepali }}
+                    @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                        <span
+                            style="font-size: 0.75rem; background: #e2e8f0; color: #4a5568; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 5px; font-weight: normal;">
+                            <i class="fa-solid fa-clock"></i> Coming Soon
+                        </span>
+                    @endif
+                </div>
                 <div class="song-artist">{{ $song->artist->name_english }}</div>
                 <div class="song-meta">
                     <i class="fa-solid fa-eye"></i> {{ number_format($song->views_count) }}

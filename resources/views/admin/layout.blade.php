@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard') - Nepali Lyrics</title>
 
+    @php
+        $siteLogo = \App\Models\SiteSetting::get('site_logo');
+        $mimeType = 'image/x-icon';
+        if ($siteLogo && file_exists(public_path($siteLogo))) {
+            $faviconUrl = asset($siteLogo) . '?v=' . filemtime(public_path($siteLogo));
+            $ext = pathinfo(public_path($siteLogo), PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
+                $mimeType = 'image/' . (strtolower($ext) === 'jpg' ? 'jpeg' : strtolower($ext));
+            }
+        } else {
+            $faviconUrl = asset('favicon.ico');
+        }
+    @endphp
+    <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+
+    {{-- Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
@@ -465,31 +488,106 @@
         }
 
         /* Pagination */
-        .pagination {
+        /* Pagination Support */
+        nav[role="navigation"] {
             display: flex;
-            gap: var(--space-2);
-            justify-content: center;
-            margin-top: var(--space-8);
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
-        .pagination a,
-        .pagination span {
-            padding: var(--space-2) var(--space-4);
+        /* Hide mobile pagination controls on desktop */
+        nav[role="navigation"]>div:first-child {
+            display: none;
+        }
+
+        /* Desktop Layout */
+        nav[role="navigation"]>div:last-child {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 1rem;
+        }
+
+        /* Showing results text */
+        nav[role="navigation"] p.small {
+            margin: 0;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Pagination List Reset */
+        ul.pagination {
+            display: flex;
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            gap: var(--space-2);
+        }
+
+        /* Page Items */
+        li.page-item {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Links styling matching theme */
+        .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2) var(--space-3);
+            min-width: 32px;
+            height: 32px;
             border: 1px solid var(--color-border);
             border-radius: var(--radius-sm);
             text-decoration: none;
             color: var(--color-text-secondary);
             font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            background: var(--color-surface);
+            transition: all 0.2s;
         }
 
-        .pagination a:hover {
-            background: var(--color-divider);
-        }
-
-        .pagination .active {
+        .page-item.active .page-link {
             background: var(--color-primary);
             color: white;
             border-color: var(--color-primary);
+        }
+
+        .page-item.disabled .page-link {
+            color: var(--color-text-muted);
+            pointer-events: none;
+            background: var(--color-bg);
+            opacity: 0.6;
+        }
+
+        .page-link:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        /* Responsive Pagination */
+        @media (max-width: 640px) {
+            nav[role="navigation"]>div:first-child {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            nav[role="navigation"]>div:last-child {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            nav[role="navigation"]>div:last-child>div:first-child {
+                display: none;
+                /* Hide 'Showing results' on very small screens to save space */
+            }
         }
 
         /* Responsive */
@@ -896,6 +994,26 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.subscriptions.index') }}"
+                        class="{{ request()->routeIs('admin.subscriptions.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-bell"></i>
+                        Subscriptions
+                        @if(\App\Models\SongSubscription::where('status', 'pending')->count() > 0)
+                            <span class="badge badge-warning"
+                                style="margin-left: auto; font-size: 0.7rem; padding: 2px 6px;">
+                                {{ \App\Models\SongSubscription::where('status', 'pending')->count() }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.visitors.index') }}"
+                        class="{{ request()->routeIs('admin.visitors.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        Visitors
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.genres.index') }}"
                         class="{{ request()->routeIs('admin.genres.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-guitar"></i>
@@ -1064,7 +1182,7 @@
         });
 
         // Logout Confirmation
-        document.getElementById('logoutForm')?.addEventListener('submit', function(e) {
+        document.getElementById('logoutForm')?.addEventListener('submit', function (e) {
             e.preventDefault();
             const form = this;
 

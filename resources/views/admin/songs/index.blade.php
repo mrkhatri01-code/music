@@ -67,7 +67,17 @@
     <div class="card-modern">
         <div class="card-header-modern">
             <h2><i class="fa-solid fa-list"></i> All Songs</h2>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="display: flex; background: #f3f4f6; padding: 0.25rem; border-radius: 8px;">
+                    <a href="{{ route('admin.songs.index') }}"
+                        style="padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.85rem; text-decoration: none; {{ !request('status') ? 'background: white; color: var(--color-primary); box-shadow: 0 1px 2px rgba(0,0,0,0.05); font-weight: 600;' : 'color: var(--color-text-secondary);' }}">
+                        All
+                    </a>
+                    <a href="{{ route('admin.songs.index', ['status' => 'coming_soon']) }}"
+                        style="padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.85rem; text-decoration: none; {{ request('status') == 'coming_soon' ? 'background: white; color: var(--color-primary); box-shadow: 0 1px 2px rgba(0,0,0,0.05); font-weight: 600;' : 'color: var(--color-text-secondary);' }}">
+                        Coming Soon
+                    </a>
+                </div>
                 <span class="badge badge-info">{{ $songs->total() }} total</span>
             </div>
         </div>
@@ -127,7 +137,11 @@
                                 </span>
                             </td>
                             <td>
-                                @if($song->year)
+                                @if($song->release_date)
+                                    <span style="color: var(--color-text-secondary); white-space: nowrap;">
+                                        {{ $song->release_date->format('d M, Y') }}
+                                    </span>
+                                @elseif($song->year)
                                     <span style="color: var(--color-text-secondary);">{{ $song->year }}</span>
                                 @else
                                     <span style="color: var(--color-text-muted);">-</span>
@@ -139,15 +153,23 @@
                                 </span>
                             </td>
                             <td>
-                                @if($song->is_published)
-                                    <span class="badge badge-success">
-                                        <i class="fa-solid fa-circle-check"></i> Published
-                                    </span>
-                                @else
-                                    <span class="badge" style="background: #f3f4f6; color: #6b7280;">
-                                        <i class="fa-solid fa-circle-dot"></i> Draft
-                                    </span>
-                                @endif
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-start;">
+                                    @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
+                                        <span class="badge" style="background: #ed8936; color: white; display: inline-flex;">
+                                            <i class="fa-solid fa-clock"></i> Coming Soon
+                                        </span>
+                                    @endif
+
+                                    @if($song->is_published)
+                                        <span class="badge badge-success">
+                                            <i class="fa-solid fa-circle-check"></i> Published
+                                        </span>
+                                    @else
+                                        <span class="badge" style="background: #f3f4f6; color: #6b7280;">
+                                            <i class="fa-solid fa-circle-dot"></i> Draft
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                             <td>
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">

@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('title_nepali');
             $table->string('slug')->unique();
             $table->foreignId('artist_id')->constrained()->onDelete('cascade');
-            $table->foreignId('genre_id')->constrained()->onDelete('cascade');
+            $table->foreignId('genre_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('movie_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('album_id')->nullable()->constrained()->onDelete('set null');
             $table->year('year')->nullable();

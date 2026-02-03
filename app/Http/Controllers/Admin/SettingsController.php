@@ -54,6 +54,15 @@ class SettingsController extends Controller
             $imageName = 'logo.' . $request->site_logo->extension();
             $request->site_logo->move(public_path('images'), $imageName);
             $validated['site_logo'] = 'images/' . $imageName;
+
+            // Also copy as favicon.ico for browser compatibility
+            try {
+                if (file_exists(public_path('images/' . $imageName))) {
+                    copy(public_path('images/' . $imageName), public_path('favicon.ico'));
+                }
+            } catch (\Exception $e) {
+                // Ignore copy errors, partial support is better than crash
+            }
         }
 
         foreach ($validated as $key => $value) {
@@ -150,6 +159,12 @@ class SettingsController extends Controller
         $reports = $query->orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.settings.reports', compact('reports'));
+    }
+
+    public function showReport(Report $report)
+    {
+        $report->load('song.artist');
+        return view('admin.settings.reports.show', compact('report'));
     }
 
     public function updateReportStatus(Request $request, Report $report)

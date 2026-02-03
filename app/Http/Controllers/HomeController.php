@@ -15,11 +15,15 @@ class HomeController extends Controller
     {
         // Cache homepage data for performance
         $trendingToday = Cache::remember('trending_today', 3600, function () {
-            return Song::trending('today')->with('artist')->limit(10)->get();
+            return Song::trending('today')
+                ->where('lyrics_status', '!=', 'coming_soon')
+                ->with('artist')->limit(10)->get();
         });
 
         $trendingWeek = Cache::remember('trending_week', 3600, function () {
-            return Song::trending('week')->with('artist')->limit(10)->get();
+            return Song::trending('week')
+                ->where('lyrics_status', '!=', 'coming_soon')
+                ->with('artist')->limit(10)->get();
         });
 
         $newSongs = Song::published()
@@ -48,6 +52,7 @@ class HomeController extends Controller
     public function trending($period = 'week')
     {
         $songs = Song::trending($period)
+            ->where('lyrics_status', '!=', 'coming_soon')
             ->with(['artist', 'genre'])
             ->paginate(30);
 

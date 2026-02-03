@@ -4,7 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Nepali Lyrics</title>
+    <title>Admin Login - {{ \App\Models\SiteSetting::get('site_name', 'Nepali Lyrics') }}</title>
+
+    @php
+        $siteLogo = \App\Models\SiteSetting::get('site_logo');
+        $siteName = \App\Models\SiteSetting::get('site_name', 'Nepali Lyrics');
+        $mimeType = 'image/x-icon';
+        if ($siteLogo && file_exists(public_path($siteLogo))) {
+            $faviconUrl = asset($siteLogo) . '?v=' . filemtime(public_path($siteLogo));
+            $ext = pathinfo(public_path($siteLogo), PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
+                $mimeType = 'image/' . (strtolower($ext) === 'jpg' ? 'jpeg' : strtolower($ext));
+            }
+        } else {
+            $faviconUrl = asset('favicon.ico');
+        }
+    @endphp
+    <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -44,6 +61,15 @@
             font-size: 2rem;
             color: #2d3748;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-header img {
+            height: 50px;
+            object-fit: contain;
         }
 
         .login-header p {
@@ -120,7 +146,14 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h1><i class="fa-solid fa-music" style="margin-right: 0.5rem;"></i>Nepali Lyrics</h1>
+            <h1>
+                @if($siteLogo)
+                    <img src="{{ asset($siteLogo) }}" alt="{{ $siteName }}">
+                @else
+                    <i class="fa-solid fa-music"></i>
+                @endif
+                {{ $siteName }}
+            </h1>
             <p>Admin Panel Login</p>
         </div>
 

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 
 class Song extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title_english',
@@ -21,15 +22,19 @@ class Song extends Model
         'album_id',
         'year',
         'youtube_url',
+        'cover_image',
+        'lyrics_status',
         'language',
         'views_count',
         'is_published',
         'meta_title',
         'meta_description',
+        'release_date',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'release_date' => 'date',
     ];
 
     // Auto-generate slug from English title
@@ -56,9 +61,15 @@ class Song extends Model
     public static function generateUniqueSlug($title)
     {
         $slug = Str::slug($title);
-        $count = static::where('slug', 'LIKE', "{$slug}%")->count();
+        $originalSlug = $slug;
+        $count = 1;
 
-        return $count ? "{$slug}-{$count}" : $slug;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$count}";
+            $count++;
+        }
+
+        return $slug;
     }
 
     // Relationships
