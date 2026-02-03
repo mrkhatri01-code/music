@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- Header --}}
-    <div class="dashboard-header">
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h1 style="font-size: 1.8rem; font-weight: 700; color: #1a202c; margin-bottom: 0.5rem;">
                 <i class="fa-solid fa-earth-americas" style="color: #667eea; margin-right: 0.5rem;"></i>
@@ -10,6 +10,24 @@
             </h1>
             <p style="color: #718096;">Monitor real-time visitor traffic and locations</p>
         </div>
+        <button onclick="location.reload()" 
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                       color: white; 
+                       border: none; 
+                       padding: 0.75rem 1.5rem; 
+                       border-radius: 8px; 
+                       font-weight: 600; 
+                       cursor: pointer; 
+                       display: flex; 
+                       align-items: center; 
+                       gap: 0.5rem;
+                       transition: all 0.3s ease;
+                       box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(102, 126, 234, 0.3)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(102, 126, 234, 0.2)';">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            Refresh
+        </button>
     </div>
 
     {{-- Stats Grid --}}

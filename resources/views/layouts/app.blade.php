@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
     {{-- SEO Meta Tags --}}
     <title>@yield('title', 'Nepali Lyrics - Latest Nepali Songs Lyrics in Unicode & Romanized')</title>
@@ -1357,8 +1360,8 @@
         </div>
 
         <script>         function showAdPopup() {             // Check if user has closed it in this session             if (!sessionStorage.getItem('ad_popup_closed')) {                 document.getElementById('ad-popup-modal').style.display = 'flex';             }         }
-             function closeAdPopup() {             document.getElementById('ad-popup-modal').style.display = 'none';             sessionStorage.setItem('ad_popup_closed', 'true');         }
-             // Show popup after 3 seconds         setTimeout(showAdPopup, 3000);
+                function closeAdPopup() { document.getElementById('ad-popup-modal').style.display = 'none'; sessionStorage.setItem('ad_popup_closed', 'true'); }
+            // Show popup after 3 seconds         setTimeout(showAdPopup, 3000);
         </script>
     @endif
 
@@ -1415,30 +1418,30 @@
     </div>
 
     <script>
-        function toggleMoreMenu() {
-            const menu = document.getElementById('moreMenu');
-            if (menu) menu.classList.toggle('show');
-        }
+            function toggleMoreMenu() {
+                const menu = document.getElementById('moreMenu');
+                if (menu) menu.classList.toggle('show');
+            }
 
-        function toggleSearch() {
-            const overlay = document.getElementById('searchOverlay');
-            const input = document.getElementById('mobileSearchInput');
-            if (overlay) {
-                overlay.classList.toggle('active');
-                if (overlay.classList.contains('active') && input) {
-                    setTimeout(() => input.focus(), 100);
+            function toggleSearch() {
+                const overlay = document.getElementById('searchOverlay');
+                const input = document.getElementById('mobileSearchInput');
+                if (overlay) {
+                    overlay.classList.toggle('active');
+                    if (overlay.classList.contains('active') && input) {
+                        setTimeout(() => input.focus(), 100);
+                    }
                 }
             }
-        }
 
-        // Close menu when clicking outside
-        document.addEventListener('click', function (e) {
-            const toggle = document.getElementById('moreNavToggle');
-            const menu = document.getElementById('moreMenu');
-            if (menu && toggle && !toggle.contains(e.target) && menu.classList.contains('show')) {
-                menu.classList.remove('show');
-            }
-        });
+            // Close menu when clicking outside
+            document.addEventListener('click', function (e) {
+                const toggle = document.getElementById('moreNavToggle');
+                const menu = document.getElementById('moreMenu');
+                if (menu && toggle && !toggle.contains(e.target) && menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                }
+            });
     </script>
 </body>
 
