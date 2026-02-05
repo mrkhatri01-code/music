@@ -1,148 +1,204 @@
+# Aruna and Ink - Music & Media Management System
 
-<div align="center">
-    <a href="https://laravel.com" target="_blank">
-        <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
-    </a>
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-8.1-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
+  <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+</p>
 
-# MusicPHP
-
-[![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php)](https://www.php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-
-**MusicPHP** is a robust and feature-rich music and media management system built with the **Laravel** framework. It provides a seamless experience for users to discover, listen to, and explore songs, albums, and artists, while offering powerful tools for administrators to manage content, track visitors, and analyze trends.
-
-</div>
+<p align="center">
+  A modern, feature-rich music and media management system built with Laravel 10. Designed for seamless music discovery, listening, and comprehensive content management.
+</p>
 
 ---
 
-## 🚀 Key Features
+## :sparkles: Features
 
-### 🎵 Public Frontend
-- **Trending & Discovery**: View trending songs by Today, Week, or Month. Discover new releases and upcoming lyrics.
-- **Mood-Based Playlists**: Curated sections for specific moods like *Love Songs*, *Sad Songs*, *Party Songs*, and *Trending on TikTok*.
-- **Comprehensive Media Library**: Explore detailed pages for **Artists**, **Albums**, **Songs**, and **Movies**.
-- **Search Functionality**: Real-time autocomplete search to find content instantly.
-- **User Engagement**:
-  - View lyrics for songs.
-  - Report issues with content.
-  - Subscribe to newsletters.
+### :globe_with_meridians: **Public Frontend**
+- **Premium UX**: Responsive design with glassmorphism effects and smooth transitions.
+- **Music Discovery**: View trending songs by **Today**, **Week**, or **Month**.
+- **Mood Playlists**: Curated sections like *Love Songs*, *Sad Songs*, and *Trending on TikTok*.
+- **Advanced Search**: Real-time autocomplete to find artists, albums, and songs instantly.
+- **Media Library**: Detailed profile pages for Artists. Albums, and Songs with lyrics.
+- **User Engagement**: Report broken content, view upcoming lyrics, and subscribe to updates.
 
-### 🛠 Admin Dashboard
-- **Content Management**: Complete CRUD operations for:
-  - 🎤 Artists
-  - 💿 Albums
-  - 🎼 Songs (with Lyrics & Reporting)
-  - 🎬 Movies
-  - 🏷 Genres
-- **Analytics & Tracking**:
-  - **Visitor Tracker**: Monitor traffic and user activity.
-  - **Reports**: Handle user-submitted reports for broken songs or lyrics.
-- **Monetization & Settings**:
-  - **Ad Manager**: Manage advertisement placements.
-  - **Site Settings**: Configure general site options.
-  - **Contact Management**: View and respond to user inquiries.
+### :wrench: **Admin Panel**
+- **Dashboard Overview**: Track visitor stats, total songs, and artist counts.
+- **Content Management**: Full CRUD for Artists, Albums, Songs, Movies, and Genres.
+- **Reports Handling**: Manage user reports for broken songs or incorrect lyrics.
+- **Monetization**: Integrated Ad Manager to control advertisement placements.
+- **Settings**: Configure site metadata, contact info, and SEO settings.
+- **Visitor Tracker**: Analytics to monitor site traffic and usage.
+
+### :lock: **Security & Optimization**
+- **Authentication**: Secure admin login and session management.
+- **Validation**: Server-side form validation for all inputs.
+- **SEO Optimized**: Dynamic meta tags and OpenGraph support for better sharing.
 
 ---
 
-## 🏗 Project Structure
+## :building_construction: Tech Stack
 
-A high-level overview of the project's file structure:
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Backend** | Laravel 10.x | Core framework, routing, MVC architecture |
+| **Frontend** | Blade Templates | Server-side rendering of views |
+| **Styling** | Custom CSS3 | Glassmorphism design system with variables |
+| **Database** | MySQL 8.0 | Relational data storage |
+| **Scripting** | Vanilla JS | Interactive elements and search |
+| **Fonts** | Poppins & Noto Sans | Typography (English & Nepali support) |
+
+---
+
+## :file_folder: Project Structure
 
 ```
 musicphp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/    # Admin & User Controllers
-│   │   ├── Middleware/     # Auth & Role Middleware
-│   │   └── Requests/       # Form Validation
-│   └── Models/             # Eloquent Models (Song, Album, Artist, etc.)
-├── config/                 # Application Configuration
+│   │   ├── Controllers/       # Admin & Public Controllers
+│   │   └── Middleware/        # Auth & Role Middleware
+│   ├── Models/                # Eloquent Models (Song, Album, Artist)
+│   └── Providers/             # Service Providers
+├── config/                    # Application Configuration
 ├── database/
-│   ├── migrations/         # Database Schema
-│   └── seeders/            # Fake Data Generators
-├── public/                 # Static Assets (Images, CSS, JS)
+│   ├── migrations/            # Database Schema Definitions
+│   └── seeders/               # Test Data Generators
+├── public/
+│   ├── css/                   # Custom Stylesheets
+│   ├── images/                # Static Assets & Uploads
+│   └── js/                    # Frontend Scripts
 ├── resources/
-│   └── views/              # Blade Templates
-│       ├── admin/          # Admin Dashboard Views
-│       ├── layouts/        # Master Layouts
-│       └── ...             # Frontend Views (Home, Artist, etc.)
-├── routes/
-│   ├── web.php             # Web Routes (User & Admin)
-│   └── api.php             # API Endpoints
-└── tests/                  # Application Tests
+│   └── views/
+│       ├── admin/             # Dashboard Views
+│       ├── layouts/           # Master Blade Layouts
+│       └── ...                # Public Frontend Views
+└── routes/
+    └── web.php                # Application Routes
 ```
 
 ---
 
-## ⚙️ Usage Flow
+## :arrows_counterclockwise: Application Workflow
 
-1.  **User Access**: Visitors land on the homepage (`/`) where they can see the latest and trending music.
-2.  **Navigation**: Users navigate through `Artists`, `Albums`, or specific `Mood` categories.
-3.  **Consumption**: Clicking a song takes the user to `lyrics/{artist}/{song}` to view details.
-4.  **Admin Login**: Administrators access the panel via `/admin/login`.
-5.  **Management**: Admins use the dashboard to upload new songs, manage artist profiles, and view site statistics.
+### 1. **User Discovery Flow**
+
+```mermaid
+graph TD
+    A[Landing Page] --> B{Discovery Mode}
+    B -->|Search| C[Autocomplete Results]
+    B -->|Browse| D[Trending/Moods]
+    C --> E[Song/Artist Page]
+    D --> E
+    E --> F{User Action}
+    F -->|Play| G[Listen to Music]
+    F -->|Read| H[View Lyrics]
+    F -->|Report| I[Submit Issue]
+```
+
+### 2. **Admin Management Flow**
+
+```mermaid
+graph LR
+    A[Admin Login] --> B[Dashboard]
+    B --> C{Manage Content}
+    C -->|Upload| D[Create Song/Album]
+    C -->|Edit| E[Update Artist Details]
+    C -->|Monitor| F[View Reports & Visitors]
+    D --> G[Database]
+    E --> G
+```
 
 ---
 
-## 💻 Getting Started
-
-Follow these steps to set up the project locally.
+## :rocket: Installation
 
 ### Prerequisites
 - PHP >= 8.1
 - Composer
 - MySQL
 
-### Installation
+### Steps
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/yourusername/musicphp.git
-    cd musicphp
-    ```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/musicphp.git
+   cd musicphp
+   ```
 
-2.  **Install Dependencies**
-    ```bash
-    composer install
-    ```
+2. **Install dependencies**
+   ```bash
+   composer install
+   ```
 
-3.  **Environment Setup**
-    Copy the example environment file and configure your database settings.
-    ```bash
-    cp .env.example .env
-    ```
-    Update `.env` with your database credentials:
-    ```ini
-    DB_DATABASE=your_database_name
-    DB_USERNAME=your_username
-    DB_PASSWORD=your_password
-    ```
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-4.  **Generate Application Key**
-    ```bash
-    php artisan key:generate
-    ```
+4. **Update `.env` file**
+   Set your database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=musicphp
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-5.  **Run Migrations**
-    Set up the database tables.
-    ```bash
-    php artisan migrate
-    ```
+5. **Run migrations**
+   ```bash
+   php artisan migrate
+   ```
 
-6.  **Start the Server**
-    ```bash
-    php artisan serve
-    ```
-    Access the application at `http://localhost:8000`.
+6. **Start development server**
+   ```bash
+   php artisan serve
+   ```
+
+7. **Access the application**
+   - Public Site: `http://127.0.0.1:8000`
+   - Admin Panel: `http://127.0.0.1:8000/admin/login`
 
 ---
 
-## 🔒 Security
+## :art: Design System
 
-If you discover any security related issues, please email the administrator instead of using the issue tracker.
+### Color Palette
+```css
+:root {
+    --color-primary: #2563eb;       /* Blue-600 */
+    --color-accent: #7c3aed;        /* Violet-600 */
+    --color-bg: #f8fafc;            /* Slate-50 */
+    --color-surface: #ffffff;       /* White */
+    --color-text-primary: #111827;  /* Gray-900 */
+    --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+```
 
-## 📄 License
+### Typography
+- **Headings**: `Poppins` (Bold, ExtraBold)
+- **Body**: `Poppins` (Regular)
+- **Nepali Text**: `Noto Sans Devanagari`
 
-The MusicPHP project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## :shield: Security
+
+- **Restricted Admin Access**: Middleware protection for admin routes.
+- **CSRF Protection**: All forms secured with Laravel tokens.
+- **Input Sanitization**: Built-in protection against SQL injection and XSS.
+
+---
+
+## :page_facing_up: License
+
+The Aruna and Ink project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+<p align="center">Made with ❤️ by Prabhakar Khatri</p>
