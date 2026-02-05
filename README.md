@@ -1,97 +1,120 @@
 
 <div align="center">
+    <a href="https://laravel.com" target="_blank">
+        <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+    </a>
 
-# 🎵 Nepali Lyrics Platform (MusicPHP)
+# MusicPHP
 
-[![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php)](https://www.php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-**A comprehensive web application for managing and displaying Nepali song lyrics.**
-<br>
-Features trending charts, artist profiles, new releases, and a robust admin dashboard.
+**MusicPHP** is a robust and feature-rich music and media management system built with the **Laravel** framework. It provides a seamless experience for users to discover, listen to, and explore songs, albums, and artists, while offering powerful tools for administrators to manage content, track visitors, and analyze trends.
 
 </div>
 
 ---
 
-## 🛠 Technology Stack
+## 🚀 Key Features
 
-### Backend
-*   **Framework**: [Laravel 10.x](https://laravel.com)
-*   **Language**: PHP 8.1+
-*   **Database**: MySQL
-*   **ORM**: Eloquent
+### 🎵 Public Frontend
+- **Trending & Discovery**: View trending songs by Today, Week, or Month. Discover new releases and upcoming lyrics.
+- **Mood-Based Playlists**: Curated sections for specific moods like *Love Songs*, *Sad Songs*, *Party Songs*, and *Trending on TikTok*.
+- **Comprehensive Media Library**: Explore detailed pages for **Artists**, **Albums**, **Songs**, and **Movies**.
+- **Search Functionality**: Real-time autocomplete search to find content instantly.
+- **User Engagement**:
+  - View lyrics for songs.
+  - Report issues with content.
+  - Subscribe to newsletters.
 
-### Frontend
-*   **Templating**: Laravel Blade
-*   **Styling**: Custom CSS (Vanilla)
-*   **Icons**: FontAwesome 6
-*   **Interactivity**: Vanilla JavaScript
+### 🛠 Admin Dashboard
+- **Content Management**: Complete CRUD operations for:
+  - 🎤 Artists
+  - 💿 Albums
+  - 🎼 Songs (with Lyrics & Reporting)
+  - 🎬 Movies
+  - 🏷 Genres
+- **Analytics & Tracking**:
+  - **Visitor Tracker**: Monitor traffic and user activity.
+  - **Reports**: Handle user-submitted reports for broken songs or lyrics.
+- **Monetization & Settings**:
+  - **Ad Manager**: Manage advertisement placements.
+  - **Site Settings**: Configure general site options.
+  - **Contact Management**: View and respond to user inquiries.
 
-## 📂 Project Structure
+---
 
-```plaintext
+## 🏗 Project Structure
+
+A high-level overview of the project's file structure:
+
+```
 musicphp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/    # Request handling logic (SongController, ArtistController, etc.)
-│   │   └── Middleware/     # Request filtering
-│   └── Models/             # Eloquent models (Song, Artist, Genre, etc.)
-├── config/                 # Application configuration files
+│   │   ├── Controllers/    # Admin & User Controllers
+│   │   ├── Middleware/     # Auth & Role Middleware
+│   │   └── Requests/       # Form Validation
+│   └── Models/             # Eloquent Models (Song, Album, Artist, etc.)
+├── config/                 # Application Configuration
 ├── database/
-│   ├── migrations/         # Database schema definitions
-│   └── seeders/            # Database seeding classes
-├── public/                 # Web server entry point and static assets (images, css, js)
+│   ├── migrations/         # Database Schema
+│   └── seeders/            # Fake Data Generators
+├── public/                 # Static Assets (Images, CSS, JS)
 ├── resources/
-│   ├── css/                # Source CSS files
-│   └── views/              # Blade templates
-│       ├── layouts/        # Base page layouts
-│       ├── pages/          # Static pages (about, contact)
-│       ├── song/           # Song-related views
-│       └── trending/       # Trending section views
+│   └── views/              # Blade Templates
+│       ├── admin/          # Admin Dashboard Views
+│       ├── layouts/        # Master Layouts
+│       └── ...             # Frontend Views (Home, Artist, etc.)
 ├── routes/
-│   ├── web.php             # Web routes definition
-│   └── api.php             # API routes definition
-├── storage/                # Logs, compiled views, file uploads
-└── tests/                  # Automated tests
+│   ├── web.php             # Web Routes (User & Admin)
+│   └── api.php             # API Endpoints
+└── tests/                  # Application Tests
 ```
 
-## 🚀 Getting Started
+---
+
+## ⚙️ Usage Flow
+
+1.  **User Access**: Visitors land on the homepage (`/`) where they can see the latest and trending music.
+2.  **Navigation**: Users navigate through `Artists`, `Albums`, or specific `Mood` categories.
+3.  **Consumption**: Clicking a song takes the user to `lyrics/{artist}/{song}` to view details.
+4.  **Admin Login**: Administrators access the panel via `/admin/login`.
+5.  **Management**: Admins use the dashboard to upload new songs, manage artist profiles, and view site statistics.
+
+---
+
+## 💻 Getting Started
 
 Follow these steps to set up the project locally.
 
 ### Prerequisites
-*   PHP >= 8.1
-*   Composer
-*   MySQL
+- PHP >= 8.1
+- Composer
+- MySQL
 
 ### Installation
 
 1.  **Clone the repository**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/yourusername/musicphp.git
     cd musicphp
     ```
 
-2.  **Install PHP dependencies**
+2.  **Install Dependencies**
     ```bash
     composer install
     ```
 
-3.  **Environment Configuration**
+3.  **Environment Setup**
     Copy the example environment file and configure your database settings.
     ```bash
     cp .env.example .env
     ```
-    Open `.env` and update the database credentials:
+    Update `.env` with your database credentials:
     ```ini
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
     DB_DATABASE=your_database_name
     DB_USERNAME=your_username
     DB_PASSWORD=your_password
@@ -108,18 +131,18 @@ Follow these steps to set up the project locally.
     php artisan migrate
     ```
 
-6.  **Start Local Server**
+6.  **Start the Server**
     ```bash
     php artisan serve
     ```
-    The application will be accessible at `http://localhost:8000`.
+    Access the application at `http://localhost:8000`.
 
-## ✨ Key Features
-*   **Trending Section**: Automated tracking of daily and weekly trending songs based on views.
-*   **Artist Profiles**: Dedicated pages for artists with their song collections.
-*   **Search**: Full-text search for songs and artists.
-*   **Admin Dashboard**: Manage songs, artists, genres, and view statistics.
-*   **Responsive Design**: Mobile-friendly interface for reading lyrics on any device.
+---
 
-## 📝 License
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔒 Security
+
+If you discover any security related issues, please email the administrator instead of using the issue tracker.
+
+## 📄 License
+
+The MusicPHP project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
