@@ -14,25 +14,204 @@
 
 ---
 
-## :sparkles: Features
+## ✨ Features
 
-### :globe_with_meridians: **Public Frontend**
-- **Premium UX**: Responsive design with glassmorphism effects and smooth transitions.
-- **Music Discovery**: View trending songs by **Today**, **Week**, or **Month**.
-- **Mood Playlists**: Curated sections like *Love Songs*, *Sad Songs*, and *Trending on TikTok*.
-- **Advanced Search**: Real-time autocomplete to find artists, albums, and songs instantly.
-- **Media Library**: Detailed profile pages for Artists. Albums, and Songs with lyrics.
-- **User Engagement**: Report broken content, view upcoming lyrics, and subscribe to updates.
+### 🎤 **Artist Management System**
 
-### :wrench: **Admin Panel**
-- **Dashboard Overview**: Track visitor stats, total songs, and artist counts.
-- **Content Management**: Full CRUD for Artists, Albums, Songs, Movies, and Genres.
-- **Reports Handling**: Manage user reports for broken songs or incorrect lyrics.
-- **Monetization**: Integrated Ad Manager to control advertisement placements.
-- **Settings**: Configure site metadata, contact info, and SEO settings.
-- **Visitor Tracker**: Analytics to monitor site traffic and usage.
+#### Admin Artist Dashboard
+The artist management system provides a complete workflow for managing artists with verification, credentials, and social media integration:
 
-### :lock: **Security & Optimization**
+- **Unified Artist Directory**: Browse all artists with real-time statistics (song count, view count, verification status)
+- **Advanced Search**: Search artists by English or Nepali names
+- **Artist Profile Creation**:
+  - Bilingual names (English + Nepali/Devanagari)
+  - Biography and date of birth
+  - Profile image (300x300px recommended) and cover image (1200x400px recommended)
+  - Social media links (YouTube, Facebook, Instagram, TikTok, Spotify, Apple Music, Website, Public Email)
+  - Verification badge system
+  
+- **Account Credentials Management**:
+  - Optional user account creation during artist profile setup
+  - Separate modal for updating email and password for existing artists
+  - Role-based access control (Artist, Admin)
+  - Security safeguards to prevent accidental modification of admin accounts
+  
+- **Verification System**: Mark artists as verified with a prominent badge displayed across the platform
+- **View Tracking**: Automatic view counting for artist profiles
+- **Statistics Dashboard**: Real-time metrics showing total artists, verified count, and total songs
+
+#### Artist Registration Requests
+Public artists can submit registration requests through a dedicated form:
+- Admin review queue for pending requests
+- **Approve**: Automatically creates user account and artist profile
+- **Reject**: Declines the request
+- Temporary password generation for new accounts (ready for email integration)
+
+---
+
+### 🏠 **Public Frontend**
+
+#### Music Discovery
+- **Homepage**: Featured sections including trending songs, new releases, and mood-based playlists
+- **Trending System**: 
+  - View trending songs by **Today**, **This Week**, or **This Month**
+  - View count-based ranking algorithm
+- **New Releases**: Browse songs by release year
+- **Top Artists**: Discover popular artists by total views
+
+#### Mood-Based Playlists
+Curated collections to match user moods:
+- 💕 Love Songs
+- 😢 Sad Songs
+- 💏 Romantic Songs
+- 🎉 Party Songs
+- 🎵 Trending on TikTok
+
+#### Advanced Search
+- **Real-time Autocomplete**: Instant suggestions as you type
+- Search across artists, albums, songs, and movies
+- Bilingual search support (English and Nepali)
+
+#### Media Library
+- **Artist Profiles**: 
+  - Complete biography and social media links
+  - Top songs by view count
+  - Full discography
+  - Profile and cover images
+  
+- **Song Pages**:
+  - Full lyrics display (Nepali and English)
+  - YouTube embed integration
+  - Artist information with linked profile
+  - Album, genre, and movie associations
+  - Tags for enhanced discoverability
+  - Related songs suggestions
+  - View counter
+  
+- **Albums**: Browse and view album details with complete tracklists
+- **Movies**: Browse Nepali movies with associated soundtracks
+- **Genres**: Filter songs by genre
+
+#### User Engagement
+- **Report System**: Users can report broken songs or incorrect lyrics
+- **Upcoming Lyrics**: View songs that will get lyrics added soon
+- **Newsletter Subscription**: Subscribe for updates on new lyrics
+- **Contact Form**: Direct communication channel to site administrators
+
+---
+
+### 🎛️ **Admin Panel**
+
+#### Dashboard Overview
+Comprehensive metrics at a glance:
+- Total songs, artists, albums, movies, genres
+- Total views across the platform
+- Visitor statistics and traffic analytics
+- Quick access to all management sections
+
+#### Content Management
+
+**Songs Management**:
+- Full CRUD operations (Create, Read, Update, Delete)
+- **Features**:
+  - Bilingual song titles (English + Nepali)
+  - Multiple artist support (for collaborations)
+  - Album and movie associations
+  - Genre and tag assignments
+  - YouTube link integration
+  - Full Nepali and English lyrics support
+  - Tablature/chords support
+  - Release year tracking
+  - Publish/unpublish toggle
+  - Featured song designation
+  - **Soft Delete**: Songs can be moved to trash and restored
+  - **Permanent Delete**: Force delete for complete removal
+- Advanced search and filtering
+- Pagination for large datasets
+
+**Albums Management**:
+- Album creation with cover art
+- Artist association
+- Release year and description
+- Track management
+
+**Movies Management**:
+- Movie profiles with poster images
+- Release year and description
+- Associated soundtrack songs
+
+**Genres Management**:
+- Create and manage music genres
+- Automatic song count tracking
+
+#### Reports & Moderation
+- **User Reports**: Review and manage user-submitted reports for broken content
+- **Status Tracking**: Mark reports as Pending, Reviewed, or Resolved
+- **Detailed View**: See full report context with linked song information
+
+#### Contact Management
+- View all contact form submissions
+- **Status System**: Pending, Read, Replied
+- Reply to inquiries
+- Delete processed contacts
+
+#### Subscription Management
+- View newsletter subscribers
+- Export subscriber list
+- Manage subscription status
+
+#### Visitor Analytics
+- Real-time visitor tracking
+- IP address, user agent, and timestamp logging
+- Page visit tracking
+- Refresh functionality for live updates
+
+#### Artist Request Management
+- Review public artist registration requests
+- Approve or reject applications
+- Automatic user and artist profile creation on approval
+
+#### Password Reset Requests
+- Admin queue for password reset requests
+- Mark as resolved or delete requests
+
+#### Settings & Configuration
+- **Site Settings**:
+  - Site name, tagline, and description
+  - Contact email and phone
+  - Social media links
+  - SEO meta tags
+  
+- **Ad Manager**: (Feature removed - clean codebase)
+
+---
+
+### 🎨 **Artist Panel** (Self-Service Portal)
+
+Artists with accounts can log in to manage their own content:
+
+#### Dashboard
+- Personal statistics overview
+- Recent songs and albums
+- Quick actions
+
+#### Profile Management
+- Update artist profile information
+- Change profile and cover images
+- Update biography and social links
+- Change password
+
+#### Content Creation
+- **Upload Songs**: Artists can add their own songs with lyrics
+- **Create Albums**: Organize songs into albums
+- **Edit Content**: Modify existing songs and albums
+
+#### Utilities
+- Romanization tool for converting Nepali text to English
+
+---
+
+### 🔒 **Security & Optimization**
 - **Authentication**: Secure admin login and session management.
 - **Validation**: Server-side form validation for all inputs.
 - **SEO Optimized**: Dynamic meta tags and OpenGraph support for better sharing.
@@ -52,63 +231,210 @@
 
 ---
 
-## :file_folder: Project Structure
+## 🏗️ Project Structure
 
 ```
 musicphp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/       # Admin & Public Controllers
-│   │   └── Middleware/        # Auth & Role Middleware
-│   ├── Models/                # Eloquent Models (Song, Album, Artist)
-│   └── Providers/             # Service Providers
-├── config/                    # Application Configuration
+│   │   ├── Controllers/
+│   │   │   ├── Admin/              # Admin Panel Controllers
+│   │   │   │   ├── ArtistController.php        # Artist CRUD + credentials
+│   │   │   │   ├── ArtistRequestController.php # Registration approval
+│   │   │   │   ├── SongController.php          # Song management
+│   │   │   │   ├── AlbumController.php         # Album management
+│   │   │   │   ├── GenreController.php         # Genre management
+│   │   │   │   ├── SettingsController.php      # Site settings + reports
+│   │   │   │   ├── ContactController.php       # Contact moderation
+│   │   │   │   └── VisitorController.php       # Analytics tracking
+│   │   │   ├── Artist/             # Artist Panel Controllers
+│   │   │   │   └── DashboardController.php     # Artist self-service
+│   │   │   ├── HomeController.php              # Homepage + trending
+│   │   │   ├── ArtistController.php            # Public profiles
+│   │   │   └── SearchController.php            # Search + autocomplete
+│   │   └── Middleware/
+│   │       ├── AdminAuth.php       # Admin authentication
+│   │       └── ArtistMiddleware.php # Artist verification
+│   ├── Models/                     # Eloquent Models (18 models)
+│   │   ├── Artist.php              # Artists with social links + verification
+│   │   ├── Song.php                # Songs with soft deletes
+│   │   ├── Album.php               # Albums
+│   │   ├── User.php                # Authentication (admin/artist roles)
+│   │   ├── Report.php              # User-submitted reports
+│   │   └── ...
+│   └── Providers/                  # Service Providers
 ├── database/
-│   ├── migrations/            # Database Schema Definitions
-│   └── seeders/               # Test Data Generators
+│   ├── migrations/                 # Database Schema
+│   └── seeders/                    # Test Data
 ├── public/
-│   ├── css/                   # Custom Stylesheets
-│   ├── images/                # Static Assets & Uploads
-│   └── js/                    # Frontend Scripts
+│   ├── css/                        # Custom Stylesheets
+│   ├── images/                     # Static Assets
+│   ├── js/                         # Frontend Scripts
+│   └── storage/                    # Symlink to uploads
+│       ├── artists/
+│       ├── albums/
+│       └── songs/
 ├── resources/
 │   └── views/
-│       ├── admin/             # Dashboard Views
-│       ├── layouts/           # Master Blade Layouts
-│       └── ...                # Public Frontend Views
+│       ├── admin/                  # Admin Panel (29 files)
+│       │   ├── artists/
+│       │   │   ├── index.blade.php
+│       │   │   ├── create.blade.php
+│       │   │   └── edit.blade.php
+│       │   ├── artist-requests/
+│       │   ├── songs/
+│       │   ├── contacts/
+│       │   └── dashboard.blade.php
+│       ├── artist/                 # Artist Panel (11 files)
+│       ├── artists/                # Public artist pages
+│       ├── song/                   # Song pages with lyrics
+│       └── home.blade.php
 └── routes/
-    └── web.php                # Application Routes
+    └── web.php                     # 251 lines of routes
 ```
+
+### Key Features by Layer
+
+**Controllers (13 Admin + 8 Public)**
+- Full CRUD for Artists, Songs, Albums, Movies, Genres
+- Artist verification and credential management
+- Content moderation (reports, contacts, password resets)
+- Analytics and visitor tracking
+- Artist self-service portal
+
+**Models (18 total)**
+- Artist, Song, Album, Movie, Genre, Tag
+- User (role-based: admin/artist)
+- Report, Contact, SongSubscription
+- VisitLog, ArtistRegistrationRequest
+
+**Database Tables**
+- Complete bilingual support (English + Nepali)
+- Soft deletes for songs
+- Social links as JSON
+- View counting system
+- Status tracking for moderation workflows
+
+
 
 ---
 
-## :arrows_counterclockwise: Application Workflow
+## 🔄 Application Workflow
 
-### 1. **User Discovery Flow**
+### 1. **Artist Registration & Management Pipeline**
 
 ```mermaid
 graph TD
-    A[Landing Page] --> B{Discovery Mode}
-    B -->|Search| C[Autocomplete Results]
-    B -->|Browse| D[Trending/Moods]
-    C --> E[Song/Artist Page]
-    D --> E
-    E --> F{User Action}
-    F -->|Play| G[Listen to Music]
-    F -->|Read| H[View Lyrics]
-    F -->|Report| I[Submit Issue]
+    A[Public Artist] -->|Fills Registration Form| B[Artist Registration Request]
+    B --> C{Admin Review}
+    C -->|Approve| D[Create User Account]
+    C -->|Reject| E[Request Declined]
+    D --> F[Generate Artist Profile]
+    F --> G[Send Credentials]
+    G --> H[Artist Panel Access]
+    
+    I[Admin] -->|Direct Creation| J[Create Artist Profile]
+    J -->|Optional| K[Create Login Credentials]
+    K --> H
+    J -->|No Login| L[Public Profile Only]
+    
+    H --> M[Artist Dashboard]
+    M --> N{Artist Actions}
+    N -->|Upload| O[Add Songs/Albums]
+    N -->|Edit| P[Update Profile]
+    N -->|Manage| Q[View Statistics]
+    
+    R[Admin] -->|Manage| S[Artist Management Dashboard]
+    S --> T{Admin Actions}
+    T -->|Edit| U[Update Artist Info]
+    T -->|Credentials| V[Change Email/Password]
+    T -->|Verify| W[Mark as Verified]
+    T -->|Delete| X[Remove Artist]
 ```
 
-### 2. **Admin Management Flow**
+### 2. **Content Management Workflow**
 
 ```mermaid
 graph LR
-    A[Admin Login] --> B[Dashboard]
-    B --> C{Manage Content}
-    C -->|Upload| D[Create Song/Album]
-    C -->|Edit| E[Update Artist Details]
-    C -->|Monitor| F[View Reports & Visitors]
-    D --> G[Database]
-    E --> G
+    A[Admin/Artist Login] --> B[Dashboard]
+    B --> C{Content Type}
+    
+    C -->|Songs| D[Song Manager]
+    D --> E[Create/Edit Song]
+    E --> F[Add Lyrics]
+    F --> G[Assign Artists]
+    G --> H[Link Album/Movie]
+    H --> I[Add Tags/Genre]
+    I --> J[Publish/Unpublish]
+    J --> K[Live on Website]
+    
+    C -->|Albums| L[Album Manager]
+    L --> M[Create Album]
+    M --> N[Upload Cover]
+    N --> O[Assign Artist]
+    O --> K
+    
+    C -->|Artists| P[Artist Manager]
+    P --> Q[Profile Setup]
+    Q --> R[Social Links]
+    R --> S[Verification]
+    S --> K
+```
+
+### 3. **User Discovery & Engagement Flow**
+
+```mermaid
+graph TD
+    A[User Visits Site] --> B{Discovery Mode}
+    
+    B -->|Search| C[Autocomplete Search]
+    C --> D[Search Results]
+    D --> E[Song/Artist/Album Page]
+    
+    B -->|Browse| F{Browse Options}
+    F -->|Trending| G[Trending Songs]
+    F -->|Mood| H[Mood Playlists]
+    F -->|New| I[New Releases]
+    F -->|Top| J[Top Artists]
+    
+    G --> E
+    H --> E
+    I --> E
+    J --> E
+    
+    E --> K{User Action}
+    K -->|Listen| L[Play on YouTube]
+    K -->|Read| M[View Lyrics]
+    K -->|Report| N[Submit Report]
+    K -->|Subscribe| O[Newsletter Signup]
+    
+    N --> P[Admin Reports Queue]
+    P --> Q{Admin Review}
+    Q -->|Fix| R[Update Content]
+    Q -->|Resolve| S[Mark Resolved]
+```
+
+### 4. **Admin Content Moderation Flow**
+
+```mermaid
+graph TD
+    A[User Reports] --> B[Reports Dashboard]
+    C[Contact Forms] --> D[Contacts Dashboard]
+    E[Artist Requests] --> F[Requests Dashboard]
+    
+    B --> G{Report Status}
+    G -->|Pending| H[Review Report]
+    H -->|Valid| I[Fix Content]
+    H -->|Invalid| J[Mark Resolved]
+    
+    D --> K{Contact Status}
+    K -->|New| L[Read Message]
+    L --> M[Reply via Email]
+    M --> N[Mark Replied]
+    
+    F --> O{Request Decision}
+    O -->|Approve| P[Create Artist Profile]
+    O -->|Reject| Q[Decline Request]
 ```
 
 ---
