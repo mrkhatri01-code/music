@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $genre->name . ' Songs - Nepali Lyrics')
+@section('title', $genre->name . ' Songs')
 
 @section('content')
     <style>

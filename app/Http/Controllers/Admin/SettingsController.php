@@ -82,6 +82,8 @@ class SettingsController extends Controller
 
         // Clear cache
         Cache::forget('homepage_data');
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
 
         return redirect()->route('admin.settings.index')
             ->with('success', 'Settings updated successfully!');
@@ -90,16 +92,14 @@ class SettingsController extends Controller
     public function ads()
     {
         $settings = [
-            'ad_header' => SiteSetting::get('ad_header', ''),
+            'ads_enabled' => SiteSetting::get('ads_enabled', '1'), // Default to enabled
             'ad_mid1' => SiteSetting::get('ad_mid1', ''),
             'ad_mid2' => SiteSetting::get('ad_mid2', ''),
             'ad_sidebar' => SiteSetting::get('ad_sidebar', ''),
             'ad_footer' => SiteSetting::get('ad_footer', ''),
             'lyrics_fixed_ad' => SiteSetting::get('lyrics_fixed_ad', ''),
-            'ad_popup_active' => SiteSetting::get('ad_popup_active', 0),
             'ad_popup_image' => SiteSetting::get('ad_popup_image', ''),
             'ad_popup_link' => SiteSetting::get('ad_popup_link', ''),
-            'ad_popup_pages' => SiteSetting::get('ad_popup_pages', 'all'),
         ];
 
         return view('admin.settings.ads', compact('settings'));
@@ -108,33 +108,35 @@ class SettingsController extends Controller
     public function updateAds(Request $request)
     {
         $validated = $request->validate([
-            'ad_header' => 'nullable|string',
+            'ads_enabled' => 'nullable|boolean', // toggle sends 1 or null/0
             'ad_mid1' => 'nullable|string',
             'ad_mid2' => 'nullable|string',
             'ad_sidebar' => 'nullable|string',
             'ad_footer' => 'nullable|string',
             'lyrics_fixed_ad' => 'nullable|string',
+            'ad_popup_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'ad_popup_link' => 'nullable|url',
-            'ad_popup_image' => 'nullable|image|max:2048',
-            'ad_popup_active' => 'nullable|boolean',
-            'ad_popup_pages' => 'nullable|in:all,homepage,lyrics,artists',
         ]);
 
-        // Handle Popup Image Upload
+
+
+        // Handle Image Upload
         if ($request->hasFile('ad_popup_image')) {
-            $imageName = 'popup_ad_' . time() . '.' . $request->ad_popup_image->extension();
+            $imageName = 'popup_ad.' . $request->ad_popup_image->extension();
             $request->ad_popup_image->move(public_path('images/ads'), $imageName);
             $validated['ad_popup_image'] = 'images/ads/' . $imageName;
         }
 
-        // Handle Checkbox (active)
-        // Checkboxes are tricky: if unchecked, they aren't sent. Validation 'boolean' handles 1/0/true/false but doesn't handle "missing".
-        // We explicitly check presence for the checkbox.
-        $validated['ad_popup_active'] = $request->has('ad_popup_active') ? 1 : 0;
+        // Handle toggle checkbox (if unchecked, it's not in request, so default to 0)
+        $validated['ads_enabled'] = $request->has('ads_enabled') ? '1' : '0';
 
         foreach ($validated as $key => $value) {
-            // Skip image if not uploaded (keep existing)
-            if ($key === 'ad_popup_image' && !$request->hasFile('ad_popup_image')) {
+            // Skip image if not uploaded to avoid overwriting, UNLESS we are deleting it
+            if ($key === 'ad_popup_image' && !$request->hasFile('ad_popup_image') && !$request->has('remove_popup_image')) {
+                continue;
+            }
+            // Also skip if it is the remove flag itself (not a setting)
+            if ($key === 'remove_popup_image') {
                 continue;
             }
 
@@ -142,9 +144,27 @@ class SettingsController extends Controller
         }
 
         Cache::forget('homepage_data');
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
 
         return redirect()->route('admin.ads.index')
             ->with('success', 'Ad settings updated successfully!');
+    }
+
+    public function deletePopupImage()
+    {
+        $currentImage = SiteSetting::get('ad_popup_image');
+        if ($currentImage && file_exists(public_path($currentImage))) {
+            @unlink(public_path($currentImage));
+        }
+
+        SiteSetting::set('ad_popup_image', '');
+
+        Cache::forget('homepage_data');
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+
+        return back()->with('success', 'Popup image deleted successfully!');
     }
 
     public function reports(Request $request)

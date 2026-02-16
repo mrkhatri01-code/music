@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Movies - Nepali Lyrics')
+@section('title', 'Movies')
 
 @section('description', 'Browse all Nepali movies with song lyrics available.')
 

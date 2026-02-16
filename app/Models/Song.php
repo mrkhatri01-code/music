@@ -167,7 +167,7 @@ class Song extends Model
 
     public function getMetaTitle()
     {
-        return $this->meta_title ?: "{$this->title_nepali} - {$this->title_english} Lyrics | Nepali Lyrics";
+        return $this->meta_title ?: "{$this->title_nepali} - {$this->title_english} Lyrics";
     }
 
     public function getMetaDescription()

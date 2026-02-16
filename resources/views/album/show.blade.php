@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $album->name . ' - Album by ' . $album->artist->name_english . ' - Nepali Lyrics')
+@section('title', $album->name . ' - Album by ' . $album->artist->name_english)
 
 @section('description', 'Listen to and view lyrics for songs from the album ' . $album->name . ' by ' . $album->artist->name_english . '.')
 
@@ -15,57 +15,57 @@
 
 @push('structured-data')
     <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "MusicAlbum",
-                    "name": "{{ $album->name }}",
-                    "byArtist": {
-                        "@type": "MusicGroup",
-                        "name": "{{ $album->artist->name_english }}"
-                    },
-                    @if($album->cover_image)
-                        "image": "{{ asset($album->cover_image) }}",
-                    @endif
-                    @if($album->year)
-                        "datePublished": "{{ $album->year }}",
-                    @endif
-                    "track": [
-                        @foreach($album->songs as $index => $song)
-                            {
-                                "@type": "MusicRecording",
-                                "name": "{{ $song->title_english }}",
-                                "alternateName": "{{ $song->title_nepali }}",
-                                "position": {{ $index + 1 }},
-                                "url": "{{ route('song.show', [$song->artist->slug, $song->slug]) }}"
-                            }{{ $loop->last ? '' : ',' }}
-                        @endforeach
-                    ],
-                    "url": "{{ route('album.show', $album->slug) }}"
-                }
-                </script>
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "MusicAlbum",
+                        "name": "{{ $album->name }}",
+                        "byArtist": {
+                            "@type": "MusicGroup",
+                            "name": "{{ $album->artist->name_english }}"
+                        },
+                        @if($album->cover_image)
+                            "image": "{{ asset($album->cover_image) }}",
+                        @endif
+                        @if($album->year)
+                            "datePublished": "{{ $album->year }}",
+                        @endif
+                        "track": [
+                            @foreach($album->songs as $index => $song)
+                                {
+                                    "@type": "MusicRecording",
+                                    "name": "{{ $song->title_english }}",
+                                    "alternateName": "{{ $song->title_nepali }}",
+                                    "position": {{ $index + 1 }},
+                                    "url": "{{ route('song.show', [$song->artist->slug, $song->slug]) }}"
+                                }{{ $loop->last ? '' : ',' }}
+                            @endforeach
+                        ],
+                        "url": "{{ route('album.show', $album->slug) }}"
+                    }
+                    </script>
 
     <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "BreadcrumbList",
-                    "itemListElement": [{
-                        "@type": "ListItem",
-                        "position": 1,
-                        "name": "Home",
-                        "item": "{{ route('home') }}"
-                    },{
-                        "@type": "ListItem",
-                        "position": 2,
-                        "name": "Albums",
-                        "item": "{{ route('album.index') }}"
-                    },{
-                        "@type": "ListItem",
-                        "position": 3,
-                        "name": "{{ $album->name }}",
-                        "item": "{{ route('album.show', $album->slug) }}"
-                    }]
-                }
-                </script>
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [{
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "{{ route('home') }}"
+                        },{
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Albums",
+                            "item": "{{ route('album.index') }}"
+                        },{
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": "{{ $album->name }}",
+                            "item": "{{ route('album.show', $album->slug) }}"
+                        }]
+                    }
+                    </script>
 @endpush
 
 @section('content')

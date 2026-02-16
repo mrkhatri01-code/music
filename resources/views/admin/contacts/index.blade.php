@@ -144,6 +144,10 @@
                             </td>
                             <td>
                                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                                    <a href="{{ route('admin.contacts.show', $contact) }}" class="btn-icon"
+                                        style="background: #dbeafe; color: #1e40af;" title="View details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
                                     <form action="{{ route('admin.contacts.update-status', $contact) }}" method="POST"
                                         style="display: inline;">
                                         @csrf

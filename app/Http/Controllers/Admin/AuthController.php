@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
-        if (Auth::check()) {
+        if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -24,14 +24,30 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        $key = 'admin_login|' . $request->ip();
+
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
+            ]);
+        }
+
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember');
 
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            \Illuminate\Support\Facades\RateLimiter::clear($key);
             $request->session()->regenerate();
+
             return redirect()->intended(route('admin.dashboard'))
-                ->with('success', 'Welcome back, ' . Auth::user()->name . '!');
+                ->with('success', 'Welcome back, ' . Auth::guard('admin')->user()->name . '!');
         }
+
+        \Illuminate\Support\Facades\RateLimiter::hit($key, 300); // 300 seconds = 5 minutes
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -40,7 +56,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

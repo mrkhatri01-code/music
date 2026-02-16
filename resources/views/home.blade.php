@@ -1,40 +1,53 @@
 @extends('layouts.app')
 
-@section('title', 'Nepali Lyrics - Latest Nepali Songs Lyrics in Unicode & Romanized')
+@section('title', $siteName . ' - Latest Songs Lyrics in Unicode & Romanized')
+@section('hide_site_name', true)
 @section('description', 'Read and download latest Nepali songs lyrics. Trending songs, new releases, top artists, and complete lyrics in Unicode and Romanized format.')
 
 @push('structured-data')
     <script type="application/ld+json">
-                                        {
-                                            "@context": "https://schema.org",
-                                            "@type": "WebSite",
-                                            "name": "{{ config('app.name') }}",
-                                            "url": "{{ route('home') }}",
-                                            "potentialAction": {
-                                                "@type": "SearchAction",
-                                                "target": {
-                                                    "@type": "EntryPoint",
-                                                    "urlTemplate": "{{ route('search') }}?q={search_term_string}"
-                                                },
-                                                "query-input": "required name=search_term_string"
-                                            }
-                                        }
-                                        </script>
+                                                                    {
+                                                                        "@context": "https://schema.org",
+                                                                        "@type": "WebSite",
+                                                                        "name": "{{ config('app.name') }}",
+                                                                        "url": "{{ route('home') }}",
+                                                                        "potentialAction": {
+                                                                            "@type": "SearchAction",
+                                                                            "target": {
+                                                                                "@type": "EntryPoint",
+                                                                                "urlTemplate": "{{ route('search') }}?q={search_term_string}"
+                                                                            },
+                                                                            "query-input": "required name=search_term_string"
+                                                                        }
+                                                                    }
+                                                                    </script>
 @endpush
 
 @section('content')
     {{-- Trending Now Section --}}
     <div class="section">
-        <h2 class="section-heading">
-            <i class="fa-solid fa-fire"></i>
-            Trending Now
-        </h2>
-        <p class="section-intro">Discover what Nepal is listening to right now</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+            <div>
+                <h2 class="section-heading" style="margin-bottom: var(--space-2);">
+                    <i class="fa-solid fa-fire"></i>
+                    Trending Now
+                </h2>
+                <p class="section-intro" style="margin-top: 0;">Discover what Nepal is listening to right now</p>
+            </div>
+            @if($trendingToday->count() > 0)
+                <a href="{{ route('trending.today') }}" class="btn btn-outline"
+                    style="white-space: nowrap; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                    View More
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            @endif
+        </div>
 
         @if($trendingToday->count() > 0)
-            <div class="grid grid-3">
+            <div class="grid grid-4">
                 @foreach($trendingToday as $song)
-                    <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
+                    <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}"
+                        class="song-card {{ $loop->iteration > 3 ? 'hide-on-mobile' : '' }}">
                         <div class="song-title nepali-text">
                             {{ $song->title_nepali }}
                             @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
@@ -78,8 +91,9 @@
     {{-- Ad Slot --}}
     @php
         $midAd1 = \App\Models\SiteSetting::get('ad_mid1');
+        $adsEnabled = \App\Models\SiteSetting::get('ads_enabled', '1');
     @endphp
-    @if($midAd1)
+    @if($adsEnabled && $midAd1)
         <div class="ad-container">
             <div class="ad-label">Advertisement</div>
             {!! $midAd1 !!}
@@ -88,16 +102,28 @@
 
     {{-- Most Viewed This Week --}}
     <div class="section">
-        <h2 class="section-heading">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            Most Viewed This Week
-        </h2>
-        <p class="section-intro">Top songs capturing hearts across Nepal</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+            <div>
+                <h2 class="section-heading" style="margin-bottom: var(--space-2);">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    Most Viewed This Week
+                </h2>
+                <p class="section-intro" style="margin-top: 0;">Top songs capturing hearts across Nepal</p>
+            </div>
+            @if($trendingWeek->count() > 0)
+                <a href="{{ route('trending.week') }}" class="btn btn-outline"
+                    style="white-space: nowrap; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                    View More
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            @endif
+        </div>
 
         @if($trendingWeek->count() > 0)
-            <div class="grid grid-3">
+            <div class="grid grid-4">
                 @foreach($trendingWeek as $song)
-                    <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
+                    <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}"
+                        class="song-card {{ $loop->iteration > 3 ? 'hide-on-mobile' : '' }}">
                         <div class="song-title nepali-text">
                             {{ $song->title_nepali }}
                             @if(isset($song->lyrics_status) && $song->lyrics_status === 'coming_soon')
@@ -155,9 +181,10 @@
         </div>
 
         @if($newSongs->count() > 0)
-            <div class="grid grid-3">
+            <div class="grid grid-4">
                 @foreach($newSongs as $song)
-                    <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}" class="song-card">
+                    <a href="{{ route('song.show', [$song->artist->slug, $song->slug]) }}"
+                        class="song-card {{ $loop->iteration > 3 ? 'hide-on-mobile' : '' }}">
                         <div class="song-title nepali-text">{{ $song->title_nepali }}</div>
                         <div class="song-title"
                             style="font-size: 0.95rem; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
@@ -242,9 +269,10 @@
         </div>
 
         @if($topArtists->count() > 0)
-            <div class="grid grid-3">
+            <div class="grid grid-4">
                 @foreach($topArtists as $artist)
-                    <a href="{{ route('artist.show', $artist->slug) }}" class="card"
+                    <a href="{{ route('artist.show', $artist->slug) }}"
+                        class="card {{ $loop->iteration > 3 ? 'hide-on-mobile' : '' }}"
                         style="text-decoration: none; display: flex; align-items: center; gap: var(--space-4);">
                         <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
                             @if($artist->profile_image_url)
@@ -288,16 +316,28 @@
 
     {{-- Popular Genres --}}
     <div class="section">
-        <h2 class="section-heading">
-            <i class="fa-solid fa-guitar"></i>
-            Popular Genres
-        </h2>
-        <p class="section-intro">Explore songs by mood and style</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+            <div>
+                <h2 class="section-heading" style="margin-bottom: var(--space-2);">
+                    <i class="fa-solid fa-guitar"></i>
+                    Popular Genres
+                </h2>
+                <p class="section-intro" style="margin-top: 0;">Explore songs by mood and style</p>
+            </div>
+            @if($genres->count() > 0)
+                <a href="{{ route('genre.index') }}" class="btn btn-outline"
+                    style="white-space: nowrap; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                    View More
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            @endif
+        </div>
 
         @if($genres->count() > 0)
             <div class="grid grid-4">
                 @foreach($genres as $genre)
-                    <a href="{{ route('genre.show', $genre->slug) }}" class="card"
+                    <a href="{{ route('genre.show', $genre->slug) }}"
+                        class="card {{ $loop->iteration > 3 ? 'hide-on-mobile' : '' }}"
                         style="text-decoration: none; background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%); color: white; text-align: center; padding: var(--space-8) var(--space-4);">
                         <div style="font-size: 1.25rem; font-weight: var(--font-weight-bold); margin-bottom: var(--space-2);">
                             {{ $genre->name }}

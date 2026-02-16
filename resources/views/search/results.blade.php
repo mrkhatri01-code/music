@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Search Results for "' . $query . '" - Nepali Lyrics')
+@section('title', 'Search Results for "' . $query . '"')
 
 @section('content')
     <style>

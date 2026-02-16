@@ -11,6 +11,7 @@ class Artist extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name_english',
         'name_nepali',
         'slug',
@@ -50,6 +51,11 @@ class Artist extends Model
     }
 
     // Relationships
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function songs()
     {
         return $this->hasMany(Song::class);
@@ -97,6 +103,6 @@ class Artist extends Model
         if (!$this->date_of_birth) {
             return null;
         }
-        return $this->date_of_birth->age;
+        return \Carbon\Carbon::parse($this->date_of_birth)->age;
     }
 }

@@ -34,6 +34,9 @@ Route::get('/upcoming-lyrics', [PageController::class, 'upcomingSongs'])->name('
 
 // Artists
 Route::get('/top-artists', [HomeController::class, 'topArtists'])->name('artists.top');
+// Artist Registration (Public)
+Route::get('/artist/register', [\App\Http\Controllers\ArtistRegistrationController::class, 'showForm'])->name('artist.register');
+Route::post('/artist/register', [\App\Http\Controllers\ArtistRegistrationController::class, 'submit'])->name('artist.register.submit');
 Route::get('/artist/{slug}', [ArtistController::class, 'show'])->name('artist.show');
 
 // Albums
@@ -95,6 +98,18 @@ use App\Http\Controllers\Admin\GenreController as AdminGenreController;
 use App\Http\Controllers\Admin\MovieController as AdminMovieController;
 use App\Http\Controllers\Admin\SettingsController;
 
+// Auth
+use App\Http\Controllers\Auth\LoginController;
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+// Password Reset Request
+use App\Http\Controllers\PasswordResetRequestController;
+Route::get('/password/reset', [PasswordResetRequestController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/password/reset', [PasswordResetRequestController::class, 'sendResetLinkEmail'])->name('password.email');
+
 // Admin Login (Guest only)
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('admin.login');
@@ -109,6 +124,7 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // Artists Management
+    Route::put('/artists/{artist}/account', [AdminArtistController::class, 'updateAccount'])->name('admin.artists.update-account');
     Route::resource('artists', AdminArtistController::class)->names([
         'index' => 'admin.artists.index',
         'create' => 'admin.artists.create',
@@ -171,6 +187,7 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
     // Ad Manager
     Route::get('/ads', [SettingsController::class, 'ads'])->name('admin.ads.index');
     Route::post('/ads', [SettingsController::class, 'updateAds'])->name('admin.ads.update');
+    Route::delete('/ads/popup-image', [SettingsController::class, 'deletePopupImage'])->name('admin.ads.delete-popup-image');
 
     // Reports
     Route::get('/reports', [SettingsController::class, 'reports'])->name('admin.reports.index');
@@ -180,6 +197,7 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
 
     // Contacts
     Route::get('/contacts', [\App\Http\Controllers\Admin\ContactController::class, 'index'])->name('admin.contacts.index');
+    Route::get('/contacts/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'show'])->name('admin.contacts.show');
     Route::patch('/contacts/{contact}/status', [\App\Http\Controllers\Admin\ContactController::class, 'updateStatus'])->name('admin.contacts.update-status');
     Route::delete('/contacts/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'destroy'])->name('admin.contacts.destroy');
 
@@ -188,5 +206,45 @@ Route::prefix('admin')->middleware('admin.auth')->group(function () {
     Route::patch('/subscriptions/{subscription}/status', [\App\Http\Controllers\Admin\SubscriptionController::class, 'toggleStatus'])->name('admin.subscriptions.status');
 
     // Visitor Tracker
+    // Visitor Tracker
     Route::get('/visitors', [\App\Http\Controllers\Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
+
+    // Artist Registration Requests
+    Route::get('/artist-requests', [\App\Http\Controllers\Admin\ArtistRequestController::class, 'index'])->name('admin.artist-requests.index');
+    Route::post('/artist-requests/{id}/approve', [\App\Http\Controllers\Admin\ArtistRequestController::class, 'approve'])->name('admin.artist-requests.approve');
+    Route::post('/artist-requests/{id}/reject', [\App\Http\Controllers\Admin\ArtistRequestController::class, 'reject'])->name('admin.artist-requests.reject');
+
+    // Password Reset Requests
+    Route::get('/password-requests', [\App\Http\Controllers\Admin\PasswordResetRequestController::class, 'index'])->name('admin.password-requests.index');
+    Route::patch('/password-requests/{id}/resolve', [\App\Http\Controllers\Admin\PasswordResetRequestController::class, 'resolve'])->name('admin.password-requests.resolve');
+    Route::delete('/password-requests/{id}', [\App\Http\Controllers\Admin\PasswordResetRequestController::class, 'destroy'])->name('admin.password-requests.destroy');
+});
+
+// Artist Panel Routes
+Route::prefix('artist-panel')->name('artist.')->middleware(['auth', 'artist'])->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Artist\DashboardController::class, 'index'])->name('dashboard');
+
+    // Profile
+    Route::get('/profile/create', [\App\Http\Controllers\Artist\DashboardController::class, 'createProfile'])->name('profile.create');
+    Route::post('/profile/create', [\App\Http\Controllers\Artist\DashboardController::class, 'storeProfile'])->name('profile.store');
+    Route::get('/profile', [\App\Http\Controllers\Artist\DashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\Artist\DashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/password', [\App\Http\Controllers\Artist\DashboardController::class, 'updatePassword'])->name('password.update');
+
+    // Songs
+    Route::get('/songs', [\App\Http\Controllers\Artist\DashboardController::class, 'songs'])->name('songs.index');
+    Route::get('/songs/create', [\App\Http\Controllers\Artist\DashboardController::class, 'createSong'])->name('songs.create');
+    Route::post('/songs', [\App\Http\Controllers\Artist\DashboardController::class, 'storeSong'])->name('songs.store');
+    Route::get('/songs/{id}/edit', [\App\Http\Controllers\Artist\DashboardController::class, 'editSong'])->name('songs.edit');
+    Route::put('/songs/{id}', [\App\Http\Controllers\Artist\DashboardController::class, 'updateSong'])->name('songs.update');
+
+    // Albums
+    Route::get('/albums', [\App\Http\Controllers\Artist\DashboardController::class, 'albums'])->name('albums.index');
+    Route::get('/albums/create', [\App\Http\Controllers\Artist\DashboardController::class, 'createAlbum'])->name('albums.create');
+    Route::post('/albums', [\App\Http\Controllers\Artist\DashboardController::class, 'storeAlbum'])->name('albums.store');
+    Route::get('/albums/{id}/edit', [\App\Http\Controllers\Artist\DashboardController::class, 'editAlbum'])->name('albums.edit');
+    Route::put('/albums/{id}', [\App\Http\Controllers\Artist\DashboardController::class, 'updateAlbum'])->name('albums.update');
+
+    // Utilities
+    Route::post('/romanize', [\App\Http\Controllers\Artist\DashboardController::class, 'romanize'])->name('romanize');
 });

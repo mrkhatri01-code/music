@@ -17,27 +17,27 @@ class HomeController extends Controller
         $trendingToday = Cache::remember('trending_today', 3600, function () {
             return Song::trending('today')
                 ->where('lyrics_status', '!=', 'coming_soon')
-                ->with('artist')->limit(10)->get();
+                ->with('artist')->limit(4)->get();
         });
 
         $trendingWeek = Cache::remember('trending_week', 3600, function () {
             return Song::trending('week')
                 ->where('lyrics_status', '!=', 'coming_soon')
-                ->with('artist')->limit(10)->get();
+                ->with('artist')->limit(4)->get();
         });
 
         $newSongs = Song::published()
             ->with('artist')
             ->orderBy('created_at', 'desc')
-            ->limit(12)
+            ->limit(4)
             ->get();
 
         $topArtists = Artist::orderBy('views_count', 'desc')
-            ->limit(12)
+            ->limit(4)
             ->get();
 
         $festivals = Festival::orderBy('start_date', 'desc')->limit(6)->get();
-        $genres = Genre::withCount('songs')->orderBy('songs_count', 'desc')->limit(12)->get();
+        $genres = Genre::withCount('songs')->orderBy('songs_count', 'desc')->limit(4)->get();
 
         return view('home', compact(
             'trendingToday',

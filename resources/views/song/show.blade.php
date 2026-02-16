@@ -10,50 +10,50 @@
 
 @push('structured-data')
     <script type="application/ld+json">
-                                            {
-                                              "@context": "https://schema.org",
-                                              "@type": "MusicRecording",
-                                              "name": "{{ $song->title_english }}",
-                                              "alternateName": "{{ $song->title_nepali }}",
-                                              "byArtist": {
-                                                "@type": "MusicGroup",
-                                                "name": "{{ $song->artist->name_english }}"
-                                              },
-                                              @if($song->album)
-                                                  "inAlbum": {
-                                                    "@type": "MusicAlbum",
-                                                    "name": "{{ $song->album->name }}"
-                                                  },
-                                              @endif
-                                              @if($song->genre)
-                                                  "genre": "{{ $song->genre->name }}",
-                                              @endif
-                                              "url": "{{ $song->getCanonicalUrl() }}"
-                                            }
-                                            </script>
+                                                    {
+                                                      "@context": "https://schema.org",
+                                                      "@type": "MusicRecording",
+                                                      "name": "{{ $song->title_english }}",
+                                                      "alternateName": "{{ $song->title_nepali }}",
+                                                      "byArtist": {
+                                                        "@type": "MusicGroup",
+                                                        "name": "{{ $song->artist->name_english }}"
+                                                      },
+                                                      @if($song->album)
+                                                          "inAlbum": {
+                                                            "@type": "MusicAlbum",
+                                                            "name": "{{ $song->album->name }}"
+                                                          },
+                                                      @endif
+                                                      @if($song->genre)
+                                                          "genre": "{{ $song->genre->name }}",
+                                                      @endif
+                                                      "url": "{{ $song->getCanonicalUrl() }}"
+                                                    }
+                                                    </script>
 
     <script type="application/ld+json">
-                                            {
-                                              "@context": "https://schema.org",
-                                              "@type": "BreadcrumbList",
-                                              "itemListElement": [{
-                                                "@type": "ListItem",
-                                                "position": 1,
-                                                "name": "Home",
-                                                "item": "{{ route('home') }}"
-                                              },{
-                                                "@type": "ListItem",
-                                                "position": 2,
-                                                "name": "{{ $song->artist->name_english }}",
-                                                "item": "{{ route('artist.show', $song->artist->slug) }}"
-                                              },{
-                                                "@type": "ListItem",
-                                                "position": 3,
-                                                "name": "{{ $song->title_english }}",
-                                                "item": "{{ $song->getCanonicalUrl() }}"
-                                              }]
-                                            }
-                                            </script>
+                                                    {
+                                                      "@context": "https://schema.org",
+                                                      "@type": "BreadcrumbList",
+                                                      "itemListElement": [{
+                                                        "@type": "ListItem",
+                                                        "position": 1,
+                                                        "name": "Home",
+                                                        "item": "{{ route('home') }}"
+                                                      },{
+                                                        "@type": "ListItem",
+                                                        "position": 2,
+                                                        "name": "{{ $song->artist->name_english }}",
+                                                        "item": "{{ route('artist.show', $song->artist->slug) }}"
+                                                      },{
+                                                        "@type": "ListItem",
+                                                        "position": 3,
+                                                        "name": "{{ $song->title_english }}",
+                                                        "item": "{{ $song->getCanonicalUrl() }}"
+                                                      }]
+                                                    }
+                                                    </script>
 @endpush
 
 @section('content')
@@ -69,8 +69,9 @@
     {{-- Ad after title --}}
     @php
         $midAd1 = \App\Models\SiteSetting::get('ad_mid1');
+        $adsEnabled = \App\Models\SiteSetting::get('ads_enabled', '1');
     @endphp
-    @if($midAd1)
+    @if($adsEnabled && $midAd1)
         <div style="margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; text-align: center; border-radius: 8px;">
             {!! $midAd1 !!}
         </div>
@@ -165,8 +166,9 @@
             {{-- Sidebar Ad --}}
             @php
                 $sidebarAd = \App\Models\SiteSetting::get('ad_sidebar');
+                $adsEnabled = $adsEnabled ?? \App\Models\SiteSetting::get('ads_enabled', '1');
             @endphp
-            @if($sidebarAd)
+            @if($adsEnabled && $sidebarAd)
                 <div style="margin-top: 1.5rem; padding: 1rem; background: #f9f9f9; text-align: center; border-radius: 8px;">
                     {!! $sidebarAd !!}
                 </div>
@@ -254,16 +256,11 @@
                         </div>
 
                         <div id="lyrics-unicode" class="lyrics-text"
-                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-                            <span
-                                style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_unicode) }}</span>
-                        </div>
+                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;"><span style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_unicode) }}</span></div>
 
                         @if($song->lyric->content_romanized)
                             <div id="lyrics-romanized" class="lyrics-text"
-                                style="display: none; font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-                                <span style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_romanized) }}</span>
-                            </div>
+                                style="display: none; font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;"><span style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_romanized) }}</span></div>
                         @endif
                     @endif
 
@@ -275,9 +272,7 @@
                             <span style="color: #4a5568; font-weight: 600;">Hindi</span>
                         </div>
                         <div class="lyrics-text"
-                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-                            <span style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_unicode) }}</span>
-                        </div>
+                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;"><span style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_unicode) }}</span></div>
                     @endif
 
                     {{-- English Song: Show English Lyrics Only --}}
@@ -288,9 +283,7 @@
                             <span style="color: #4a5568; font-weight: 600;">English</span>
                         </div>
                         <div class="lyrics-text"
-                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-                            {{ $song->lyric->content_unicode }}
-                        </div>
+                            style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; padding: 1.5rem; background: #f7fafc; border-radius: 8px; border-left: 4px solid #667eea; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;"><span style="display: block; margin: 0; padding: 0; text-indent: 0;">{{ trim($song->lyric->content_unicode) }}</span></div>
                     @endif
                 </div>
             @else
@@ -302,8 +295,9 @@
             {{-- Ad after first verse --}}
             @php
                 $midAd2 = \App\Models\SiteSetting::get('ad_mid2');
+                $adsEnabled = $adsEnabled ?? \App\Models\SiteSetting::get('ads_enabled', '1');
             @endphp
-            @if($midAd2)
+            @if($adsEnabled && $midAd2)
                 <div style="margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; text-align: center; border-radius: 8px;">
                     {!! $midAd2 !!}
                 </div>
@@ -320,8 +314,7 @@
                     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
                         <iframe src="https://www.youtube.com/embed/{{ getYouTubeId($song->youtube_url) }}" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen 
-                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                            allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
                         </iframe>
                     </div>
                 </div>
@@ -474,20 +467,20 @@
 
             const toast = document.createElement('div');
             toast.style.cssText = `
-                                            position: fixed;
-                                            top: 80px;
-                                            right: 20px;
-                                            background: ${colors[type]};
-                                            color: white;
-                                            padding: 1rem 1.5rem;
-                                            border-radius: 8px;
-                                            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                                            z-index: 9999;
-                                            display: flex;
-                                            align-items: center;
-                                            gap: 0.75rem;
-                                            animation: slideIn 0.3s ease;
-                                        `;
+                                                    position: fixed;
+                                                    top: 80px;
+                                                    right: 20px;
+                                                    background: ${colors[type]};
+                                                    color: white;
+                                                    padding: 1rem 1.5rem;
+                                                    border-radius: 8px;
+                                                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                                                    z-index: 9999;
+                                                    display: flex;
+                                                    align-items: center;
+                                                    gap: 0.75rem;
+                                                    animation: slideIn 0.3s ease;
+                                                `;
             toast.innerHTML = `<i class="fa-solid ${icons[type]}" style="font-size: 1.2rem;"></i><span>${message}</span>`;
             document.body.appendChild(toast);
 
@@ -612,24 +605,24 @@
 
             const toast = document.createElement('div');
             toast.style.cssText = `
-                                            position: fixed;
-                                            top: 80px;
-                                            right: 20px;
-                                            background: ${bgColor};
-                                            color: white;
-                                            padding: 1rem 1.5rem;
-                                            border-radius: 8px;
-                                            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                                            z-index: 10000;
-                                            display: flex;
-                                            align-items: center;
-                                            gap: 0.75rem;
-                                            animation: slideIn 0.3s ease;
-                                        `;
+                                                    position: fixed;
+                                                    top: 80px;
+                                                    right: 20px;
+                                                    background: ${bgColor};
+                                                    color: white;
+                                                    padding: 1rem 1.5rem;
+                                                    border-radius: 8px;
+                                                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                                                    z-index: 10000;
+                                                    display: flex;
+                                                    align-items: center;
+                                                    gap: 0.75rem;
+                                                    animation: slideIn 0.3s ease;
+                                                `;
             toast.innerHTML = `
-                                            <i class="fa-solid ${icon}" style="font-size: 1.2rem;"></i>
-                                            <span>${message}</span>
-                                        `;
+                                                    <i class="fa-solid ${icon}" style="font-size: 1.2rem;"></i>
+                                                    <span>${message}</span>
+                                                `;
 
             document.body.appendChild(toast);
 
@@ -706,7 +699,7 @@
                 body: JSON.stringify({
                     email: email,
                     song_id: {{ $song->id }}
-                                        })
+                                                })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -742,8 +735,9 @@
 {{-- Fixed Ad Section (Bottom-Right Sticky) --}}
 @php
     $lyricsFixedAd = \App\Models\SiteSetting::get('lyrics_fixed_ad', '');
+    $adsEnabled = \App\Models\SiteSetting::get('ads_enabled', '1');
 @endphp
-@if($lyricsFixedAd)
+@if($adsEnabled && $lyricsFixedAd)
     <div id="fixedAdContainer"
         style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; max-width: 350px; background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); overflow: hidden; animation: slideInUp 0.5s ease; display: none;">
         {{-- Close Button --}}

@@ -20,6 +20,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
-        // \App\Models\Song::observe(\App\Observers\SongObserver::class);
+
+        try {
+            $siteName = \App\Models\SiteSetting::get('site_name') ?: config('app.name', 'Nepali Lyrics');
+            $siteLogo = \App\Models\SiteSetting::get('site_logo');
+
+            \Illuminate\Support\Facades\View::share('siteName', $siteName);
+            \Illuminate\Support\Facades\View::share('siteLogo', $siteLogo);
+        } catch (\Exception $e) {
+            // Fallback if database or table not found (e.g. during migration)
+            \Illuminate\Support\Facades\View::share('siteName', config('app.name', 'Nepali Lyrics'));
+            \Illuminate\Support\Facades\View::share('siteLogo', null);
+        }
     }
 }

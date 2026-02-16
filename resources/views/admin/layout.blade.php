@@ -974,11 +974,12 @@
                 </li>
                 <li>
                     <a href="{{ route('admin.artists.index') }}"
-                        class="{{ request()->routeIs('admin.artists.*') ? 'active' : '' }}">
+                        class="{{ request()->routeIs('admin.artists.*') || request()->routeIs('admin.artist-requests.*') || request()->routeIs('admin.password-requests.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-microphone"></i>
                         Artists
                     </a>
                 </li>
+
                 <li>
                     <a href="{{ route('admin.albums.index') }}"
                         class="{{ request()->routeIs('admin.albums.*') ? 'active' : '' }}">

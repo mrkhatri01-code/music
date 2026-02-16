@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $title . ' - Nepali Lyrics')
+@section('title', $title)
 
 @section('content')
     <style>

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -42,4 +43,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // Helper methods
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isArtist()
+    {
+        return $this->role === 'artist';
+    }
+
+    // Relationships
+    public function artist()
+    {
+        return $this->hasOne(Artist::class);
+    }
 }

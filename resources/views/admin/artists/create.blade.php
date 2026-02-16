@@ -11,6 +11,27 @@
         <form action="{{ route('admin.artists.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
+            <div
+                style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #e2e8f0;">
+                <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; color: #2d3748;">Login Credentials
+                    (Optional)</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}"
+                            autocomplete="off">
+                        <small style="color: #718096;">Leave blank if not creating a login account yet.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                            autocomplete="new-password">
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; color: #2d3748;">Artist Profile</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                 <div class="form-group">
                     <label for="name_english">Name (English) *</label>
@@ -94,6 +115,12 @@
                     <label for="website">Website URL</label>
                     <input type="url" id="website" name="website" class="form-control" value="{{ old('website') }}"
                         placeholder="https://artist-website.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="public_email">Public Email (Gmail)</label>
+                    <input type="email" id="public_email" name="public_email" class="form-control"
+                        value="{{ old('public_email') }}" placeholder="contact@artist.com">
                 </div>
             </div>
 

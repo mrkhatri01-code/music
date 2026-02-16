@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Top Nepali Artists - Nepali Lyrics')
+@section('title', 'Top Artists')
 
 @section('content')
     <style>

@@ -1,4 +1,4 @@
-# Aruna and Ink - Music & Media Management System
+# MusicPHP - Music & Media Management System
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
@@ -197,7 +197,7 @@ graph LR
 
 ## :page_facing_up: License
 
-The Aruna and Ink project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The MusicPHP project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ---
 

@@ -6,7 +6,8 @@
     {{-- Welcome Header --}}
     <div class="dashboard-header">
         <div>
-            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Welcome back, {{ Auth::user()->name }}! 👋
+            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Welcome back,
+                {{ Auth::guard('admin')->user()->name }}! 👋
             </h1>
             <p style="color: var(--color-text-secondary); font-size: 1rem;">Here's what's happening with your content today.
             </p>
@@ -118,7 +119,8 @@
                                     <div style="font-weight: 600; color: var(--color-text-primary);">{{ $song->title_nepali }}
                                     </div>
                                     <div style="font-size: 0.875rem; color: var(--color-text-secondary);">
-                                        {{ $song->title_english }}</div>
+                                        {{ $song->title_english }}
+                                    </div>
                                 </td>
                                 <td>{{ $song->artist->name_english }}</td>
                                 <td>

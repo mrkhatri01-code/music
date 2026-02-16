@@ -93,10 +93,14 @@
                             <td>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <i class="fa-solid fa-user" style="color: var(--color-text-muted); font-size: 0.75rem;"></i>
-                                    <a href="{{ route('admin.artists.edit', $album->artist->id) }}" 
-                                       style="color: var(--color-primary); text-decoration: none;">
-                                        {{ $album->artist->name_english }}
-                                    </a>
+                                    @if($album->artist)
+                                        <a href="{{ route('admin.artists.edit', $album->artist->id) }}" 
+                                           style="color: var(--color-primary); text-decoration: none;">
+                                            {{ $album->artist->name_english }}
+                                        </a>
+                                    @else
+                                        <span style="color: var(--color-text-muted); font-style: italic;">Unknown Artist (ID: {{ $album->artist_id ?? 'N/A' }})</span>
+                                    @endif
                                 </div>
                             </td>
                             <td>

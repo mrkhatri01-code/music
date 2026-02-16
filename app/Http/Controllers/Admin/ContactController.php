@@ -22,6 +22,11 @@ class ContactController extends Controller
         return view('admin.contacts.index', compact('contacts'));
     }
 
+    public function show(Contact $contact)
+    {
+        return view('admin.contacts.show', compact('contact'));
+    }
+
     public function updateStatus(Request $request, Contact $contact)
     {
         $validated = $request->validate([

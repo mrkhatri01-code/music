@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Terms of Service - Nepali Lyrics')
+@section('title', 'Terms of Service')
 
 @section('content')
     <div

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $artist->name_english . ' Songs & Lyrics - Nepali Lyrics')
+@section('title', $artist->name_english . ' Songs & Lyrics')
 @section('description', 'All songs and lyrics by ' . $artist->name_english . ' (' . $artist->name_nepali . '). Complete collection with Unicode and Romanized lyrics.')
 
 @section('canonical', route('artist.show', $artist->slug))
@@ -11,40 +11,40 @@
 
 @push('structured-data')
     <script type="application/ld+json">
-                                                                                                            {
-                                                                                                                "@context": "https://schema.org",
-                                                                                                                "@type": "MusicGroup",
-                                                                                                                "name": "{{ $artist->name_english }}",
-                                                                                                                "alternateName": "{{ $artist->name_nepali }}",
-                                                                                                                @if($artist->bio)
-                                                                                                                    "description": "{{ $artist->bio }}",
-                                                                                                                @endif
-                                                                                                                "url": "{{ route('artist.show', $artist->slug) }}"
-                                                                                                            }
-                                                                                                            </script>
+                                                                                                                                {
+                                                                                                                                    "@context": "https://schema.org",
+                                                                                                                                    "@type": "MusicGroup",
+                                                                                                                                    "name": "{{ $artist->name_english }}",
+                                                                                                                                    "alternateName": "{{ $artist->name_nepali }}",
+                                                                                                                                    @if($artist->bio)
+                                                                                                                                        "description": "{{ $artist->bio }}",
+                                                                                                                                    @endif
+                                                                                                                                    "url": "{{ route('artist.show', $artist->slug) }}"
+                                                                                                                                }
+                                                                                                                                </script>
 
     <script type="application/ld+json">
-                                                                                                            {
-                                                                                                                "@context": "https://schema.org",
-                                                                                                                "@type": "BreadcrumbList",
-                                                                                                                "itemListElement": [{
-                                                                                                                    "@type": "ListItem",
-                                                                                                                    "position": 1,
-                                                                                                                    "name": "Home",
-                                                                                                                    "item": "{{ route('home') }}"
-                                                                                                                },{
-                                                                                                                    "@type": "ListItem",
-                                                                                                                    "position": 2,
-                                                                                                                    "name": "Artists",
-                                                                                                                    "item": "{{ route('artists.top') }}"
-                                                                                                                },{
-                                                                                                                    "@type": "ListItem",
-                                                                                                                    "position": 3,
-                                                                                                                    "name": "{{ $artist->name_english }}",
-                                                                                                                    "item": "{{ route('artist.show', $artist->slug) }}"
-                                                                                                                }]
-                                                                                                            }
-                                                                                                            </script>
+                                                                                                                                {
+                                                                                                                                    "@context": "https://schema.org",
+                                                                                                                                    "@type": "BreadcrumbList",
+                                                                                                                                    "itemListElement": [{
+                                                                                                                                        "@type": "ListItem",
+                                                                                                                                        "position": 1,
+                                                                                                                                        "name": "Home",
+                                                                                                                                        "item": "{{ route('home') }}"
+                                                                                                                                    },{
+                                                                                                                                        "@type": "ListItem",
+                                                                                                                                        "position": 2,
+                                                                                                                                        "name": "Artists",
+                                                                                                                                        "item": "{{ route('artists.top') }}"
+                                                                                                                                    },{
+                                                                                                                                        "@type": "ListItem",
+                                                                                                                                        "position": 3,
+                                                                                                                                        "name": "{{ $artist->name_english }}",
+                                                                                                                                        "item": "{{ route('artist.show', $artist->slug) }}"
+                                                                                                                                    }]
+                                                                                                                                }
+                                                                                                                                </script>
 @endpush
 
 @section('content')
@@ -102,6 +102,8 @@
             border-radius: 50%;
             transition: all 0.3s;
             font-size: 1.1rem;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .social-links a:hover {
@@ -135,6 +137,10 @@
 
         .social-links a.website:hover {
             background: rgba(99, 102, 241, 0.8);
+        }
+
+        .social-links a.email:hover {
+            background: rgba(234, 67, 53, 0.8);
         }
 
         .songs-section {
@@ -322,6 +328,12 @@
                 color: #6366f1;
                 border-color: #6366f1;
             }
+
+            .artist-content-card .social-links a.email:hover {
+                background: rgba(234, 67, 53, 0.1);
+                color: #ea4335;
+                border-color: #ea4335;
+            }
         }
     </style>
 
@@ -402,6 +414,11 @@
                             <i class="fa-solid fa-globe"></i>
                         </a>
                     @endif
+                    @if(isset($artist->social_links['public_email']) && $artist->social_links['public_email'])
+                        <a href="mailto:{{ $artist->social_links['public_email'] }}" class="email" title="Email">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    @endif
                 </div>
             @endif
         </div>
@@ -470,6 +487,11 @@
                     @if(isset($artist->social_links['website']) && $artist->social_links['website'])
                         <a href="{{ $artist->social_links['website'] }}" target="_blank" class="website" title="Website">
                             <i class="fa-solid fa-globe"></i>
+                        </a>
+                    @endif
+                    @if(isset($artist->social_links['public_email']) && $artist->social_links['public_email'])
+                        <a href="mailto:{{ $artist->social_links['public_email'] }}" class="email" title="Email">
+                            <i class="fa-solid fa-envelope"></i>
                         </a>
                     @endif
                 </div>

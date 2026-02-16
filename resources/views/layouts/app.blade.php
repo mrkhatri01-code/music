@@ -1,3 +1,18 @@
+@php
+    $mimeType = 'image/x-icon';
+    // Use shared variable $siteLogo if available
+    $currentSiteLogo = $siteLogo ?? null;
+
+    if ($currentSiteLogo && file_exists(public_path($currentSiteLogo))) {
+        $faviconUrl = asset($currentSiteLogo) . '?v=' . filemtime(public_path($currentSiteLogo));
+        $ext = pathinfo(public_path($currentSiteLogo), PATHINFO_EXTENSION);
+        if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
+            $mimeType = 'image/' . (strtolower($ext) === 'jpg' ? 'jpeg' : strtolower($ext));
+        }
+    } else {
+        $faviconUrl = file_exists(public_path('favicon.ico')) ? asset('favicon.ico') : asset('images/logo.png');
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +25,7 @@
     <meta http-equiv="Expires" content="0">
 
     {{-- SEO Meta Tags --}}
-    <title>@yield('title', 'Nepali Lyrics - Latest Nepali Songs Lyrics in Unicode & Romanized')</title>
+    <title>@yield('title')@unless(View::hasSection('hide_site_name')) | {{ $siteName }}@endunless</title>
     <meta name="description"
         content="@yield('description', 'Read and download latest Nepali songs lyrics in Unicode and Romanized format. Trending songs, new releases, and complete lyrics collection.')">
     <meta name="keywords" content="@yield('keywords', 'nepali lyrics, nepali songs, lyrics unicode, romanized lyrics')">
@@ -20,22 +35,9 @@
 
     {{-- OpenGraph Tags --}}
     {{-- OpenGraph Tags --}}
-    @php
-        $siteLogo = \App\Models\SiteSetting::get('site_logo');
-        $siteName = \App\Models\SiteSetting::get('site_name', 'Nepali Lyrics');
-        $mimeType = 'image/x-icon';
-        if ($siteLogo && file_exists(public_path($siteLogo))) {
-            $faviconUrl = asset($siteLogo) . '?v=' . filemtime(public_path($siteLogo));
-            $ext = pathinfo(public_path($siteLogo), PATHINFO_EXTENSION);
-            if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
-                $mimeType = 'image/' . (strtolower($ext) === 'jpg' ? 'jpeg' : strtolower($ext));
-            }
-        } else {
-            $faviconUrl = asset('favicon.ico');
-        }
-    @endphp
 
-    <meta property="og:title" content="@yield('og_title', config('app.name'))">
+
+    <meta property="og:title" content="@yield('og_title', $siteName)">
     <meta property="og:description" content="@yield('og_description', 'Latest Nepali Songs Lyrics')">
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
@@ -153,6 +155,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -252,12 +255,12 @@
             transition: width var(--transition-base);
         }
 
-        nav a:hover {
+        nav a:not(.btn):hover {
             color: var(--color-primary);
             transform: translateY(-1px);
         }
 
-        nav a:hover::after {
+        nav a:not(.btn):hover::after {
             width: 100%;
         }
 
@@ -461,9 +464,9 @@
                 margin: 0 0.2rem;
             }
 
-            /* Prevent content behind fixed nav (Moved to Footer) */
+            /* Prevent content behind fixed nav */
             body {
-                padding-bottom: 0;
+                padding-bottom: 80px;
             }
 
             /* Bottom Navigation Bar */
@@ -632,12 +635,29 @@
 
             /* Mobile Footer */
             footer {
+                display: none;
+                /* Hidden by default on mobile */
                 padding: 1.5rem 0 100px;
                 /* Reduced padding */
                 margin-top: 1rem;
                 text-align: left;
                 position: relative;
                 z-index: 1;
+            }
+
+            footer.active-mobile {
+                display: block !important;
+                animation: fadeIn 0.5s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
             }
 
             .footer-content {
@@ -1118,6 +1138,38 @@
             .grid-4 {
                 grid-template-columns: 1fr;
             }
+
+            .hide-on-mobile {
+                display: none !important;
+            }
+        }
+
+        /* Header Login Button */
+        .header-login-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-primary);
+            color: white !important;
+            padding: 0.6rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+            border: 1px solid transparent;
+        }
+
+        .header-login-btn:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2), 0 4px 6px -2px rgba(37, 99, 235, 0.1);
+            color: white !important;
+        }
+
+        .header-login-btn i {
+            font-size: 1rem;
         }
     </style>
 
@@ -1125,16 +1177,6 @@
 </head>
 
 <body>
-    {{-- Header Ad Slot --}}
-    @php
-        $headerAd = \App\Models\SiteSetting::get('ad_header');
-    @endphp
-    @if($headerAd)
-        <div class="ad-container">
-            <div class="ad-label">Advertisement</div>
-            {!! $headerAd !!}
-        </div>
-    @endif
 
     {{-- Header --}}
     <header>
@@ -1184,6 +1226,18 @@
                     <li><a href="{{ route('album.index') }}">Albums</a></li>
                     <li><a href="{{ route('movie.index') }}">Movies</a></li>
                     <li><a href="{{ route('genre.index') }}">Genres</a></li>
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <li><a href="{{ route('admin.dashboard') }}" class="btn btn-primary"
+                                    style="padding: 0.5rem 1rem; color: white;">Admin Panel</a></li>
+                        @elseif(auth()->user()->role === 'artist')
+                            <li><a href="{{ route('artist.dashboard') }}" class="btn btn-primary"
+                                    style="padding: 0.5rem 1rem; color: white;">Dashboard</a></li>
+                        @endif
+                    @else
+                        <li><a href="{{ route('login') }}" class="btn btn-outline" style="padding: 0.5rem 1rem;">Artist
+                                Login</a></li>
+                    @endauth
                 </ul>
             </nav>
         </div>
@@ -1209,15 +1263,31 @@
     {{-- Main Content --}}
     <main>
         <div class="container">
+            @if(session('success'))
+                <div class="alert alert-success"
+                    style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #10b981; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                    <i class="fa-solid fa-circle-check" style="margin-right: 0.5rem;"></i> {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger"
+                    style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                    <i class="fa-solid fa-circle-exclamation" style="margin-right: 0.5rem;"></i> {{ session('error') }}
+                </div>
+            @endif
+
             @yield('content')
         </div>
     </main>
 
     {{-- Footer Ad Slot --}}
     @php
+        $adsEnabled = \App\Models\SiteSetting::get('ads_enabled', '1');
         $footerAd = \App\Models\SiteSetting::get('ad_footer');
+        $adsEnabled = \App\Models\SiteSetting::get('ads_enabled', '1');
     @endphp
-    @if($footerAd)
+    @if($adsEnabled && $footerAd)
         <div class="ad-container">
             <div class="ad-label">Advertisement</div>
             {!! $footerAd !!}
@@ -1301,6 +1371,7 @@
                         <li><a href="{{ route('upcoming') }}">Upcoming Lyrics</a></li>
                         <li><a href="{{ route('artists.top') }}">Top Artists</a></li>
                         <li><a href="{{ route('genre.index') }}">Genres</a></li>
+                        <li><a href="{{ route('artist.register') }}">Join as Artist</a></li>
                     </ul>
                 </div>
 
@@ -1318,52 +1389,12 @@
             </div>
 
             <div class="footer-bottom" style="margin-bottom: 20px;">
-                <p>&copy; {{ date('Y') }} Nepali Lyrics. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     @stack('scripts')
-
-    {{-- Popup Ad Modal --}}
-    @php
-        $popupActive = \App\Models\SiteSetting::get('ad_popup_active', 0);
-        $popupImage = \App\Models\SiteSetting::get('ad_popup_image', '');
-        $popupLink = \App\Models\SiteSetting::get('ad_popup_link', '#');
-        $popupPages = \App\Models\SiteSetting::get('ad_popup_pages', 'all');
-
-        // Determine if popup should show on current page
-        $showPopup = false;
-        if ($popupPages === 'all') {
-            $showPopup = true;
-        } elseif ($popupPages === 'homepage' && request()->routeIs('home')) {
-            $showPopup = true;
-        } elseif ($popupPages === 'lyrics' && request()->routeIs('song.show')) {
-            $showPopup = true;
-        } elseif ($popupPages === 'artists' && (request()->routeIs('artist.show') || request()->routeIs('artists.*'))) {
-            $showPopup = true;
-        }
-    @endphp
-
-    @if($popupActive && $popupImage && $showPopup)
-        <div id="ad-popup-modal"
-            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
-            <div style="position: relative; max-width: 90%; max-height: 90%;">
-                <button onclick="closeAdPopup()"
-                    style="position: absolute; top: -15px; right: -15px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-weight: bold; color: #333;">&times;</button>
-                <a href="{{ $popupLink }}" target="_blank" onclick="closeAdPopup()">
-                    <img src="{{ asset($popupImage) }}" alt="Special Offer"
-                        style="max-width: 100%; max-height: 80vh; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.5);"
-                        loading="lazy" decoding="async">
-                </a>
-            </div>
-        </div>
-
-        <script>         function showAdPopup() {             // Check if user has closed it in this session             if (!sessionStorage.getItem('ad_popup_closed')) {                 document.getElementById('ad-popup-modal').style.display = 'flex';             }         }
-                function closeAdPopup() { document.getElementById('ad-popup-modal').style.display = 'none'; sessionStorage.setItem('ad_popup_closed', 'true'); }
-            // Show popup after 3 seconds         setTimeout(showAdPopup, 3000);
-        </script>
-    @endif
 
     {{-- Mobile Bottom Navigation --}}
     <nav class="bottom-nav">
@@ -1395,6 +1426,24 @@
                 <a href="{{ route('album.index') }}">Albums</a>
                 <a href="{{ route('movie.index') }}">Movies</a>
                 <a href="{{ route('genre.index') }}">Genres</a>
+                @auth
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" style="color: var(--color-primary); font-weight: bold;">Admin
+                            Panel</a>
+                    @elseif(auth()->user()->role === 'artist')
+                        <a href="{{ route('artist.dashboard') }}"
+                            style="color: var(--color-primary); font-weight: bold;">Dashboard</a>
+                    @endif
+                    <form action="{{ route('logout') }}" method="POST" style="display: block;">
+                        @csrf
+                        <button type="submit"
+                            style="background: none; border: none; padding: 12px 20px; width: 100%; text-align: left; font-size: 14px; color: var(--color-text-primary); cursor: pointer;">Logout</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" style="color: var(--color-primary); font-weight: bold;">Artist Login</a>
+                    <a href="{{ route('artist.register') }}">Join as Artist</a>
+                @endauth
+                <a href="javascript:void(0)" onclick="toggleFooter()">Footer</a>
             </div>
         </div>
     </nav>
@@ -1418,31 +1467,150 @@
     </div>
 
     <script>
-            function toggleMoreMenu() {
-                const menu = document.getElementById('moreMenu');
-                if (menu) menu.classList.toggle('show');
-            }
+        function toggleMoreMenu() {
+            const menu = document.getElementById('moreMenu');
+            if (menu) menu.classList.toggle('show');
+        }
 
-            function toggleSearch() {
-                const overlay = document.getElementById('searchOverlay');
-                const input = document.getElementById('mobileSearchInput');
-                if (overlay) {
-                    overlay.classList.toggle('active');
-                    if (overlay.classList.contains('active') && input) {
-                        setTimeout(() => input.focus(), 100);
-                    }
+        function toggleFooter() {
+            const footer = document.querySelector('footer');
+            if (footer) {
+                // Toggle visibility class
+                footer.classList.toggle('active-mobile');
+
+                // If visible, scroll to it
+                if (footer.classList.contains('active-mobile')) {
+                    setTimeout(() => {
+                        footer.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                 }
             }
+            // Close more menu
+            const menu = document.getElementById('moreMenu');
+            if (menu) menu.classList.remove('show');
+        }
 
-            // Close menu when clicking outside
-            document.addEventListener('click', function (e) {
-                const toggle = document.getElementById('moreNavToggle');
-                const menu = document.getElementById('moreMenu');
-                if (menu && toggle && !toggle.contains(e.target) && menu.classList.contains('show')) {
-                    menu.classList.remove('show');
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            const input = document.getElementById('mobileSearchInput');
+            if (overlay) {
+                overlay.classList.toggle('active');
+                if (overlay.classList.contains('active') && input) {
+                    setTimeout(() => input.focus(), 100);
+                }
+            }
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            const toggle = document.getElementById('moreNavToggle');
+            const menu = document.getElementById('moreMenu');
+            if (menu && toggle && !toggle.contains(e.target) && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
+    </script>
+
+    {{-- Global Popup Ad --}}
+    @php
+        $popupImage = \App\Models\SiteSetting::get('ad_popup_image');
+        $popupLink = \App\Models\SiteSetting::get('ad_popup_link');
+        $adsEnabled = $adsEnabled ?? \App\Models\SiteSetting::get('ads_enabled', '1');
+    @endphp
+    @if($adsEnabled && $popupImage)
+        <div id="globalPopupAd" class="popup-ad-overlay" style="display: none;">
+            <div class="popup-ad-content">
+                <button class="popup-ad-close" onclick="closePopupAd()">&times;</button>
+                <div class="popup-ad-body">
+                    @if($popupLink)
+                        <a href="{{ $popupLink }}" target="_blank">
+                            <img src="{{ asset($popupImage) }}" alt="Special Offer"
+                                style="max-width: 100%; height: auto; display: block; border-radius: 4px;">
+                        </a>
+                    @else
+                        <img src="{{ asset($popupImage) }}" alt="Special Offer"
+                            style="max-width: 100%; height: auto; display: block; border-radius: 4px;">
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .popup-ad-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                backdrop-filter: blur(5px);
+            }
+
+            .popup-ad-content {
+                background: transparent;
+                padding: 0;
+                border-radius: 8px;
+                position: relative;
+                max-width: 90%;
+                max-height: 90%;
+            }
+
+            .popup-ad-close {
+                position: absolute;
+                top: -15px;
+                right: -15px;
+                background: white;
+                border: 2px solid #333;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+                line-height: 26px;
+                text-align: center;
+                cursor: pointer;
+                color: #333;
+                font-weight: bold;
+                z-index: 10;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .popup-ad-close:hover {
+                background: #f0f0f0;
+            }
+
+            @media (min-width: 768px) {
+                .popup-ad-content {
+                    max-width: 600px;
+                }
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!sessionStorage.getItem('popupAdShown')) {
+                    setTimeout(function () {
+                        const popup = document.getElementById('globalPopupAd');
+                        if (popup) {
+                            popup.style.display = 'flex';
+                        }
+                    }, 2000);
                 }
             });
-    </script>
+
+            function closePopupAd() {
+                const popup = document.getElementById('globalPopupAd');
+                if (popup) {
+                    popup.style.display = 'none';
+                    sessionStorage.setItem('popupAdShown', 'true');
+                }
+            }
+        </script>
+    @endif
 </body>
 
 </html>

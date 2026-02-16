@@ -58,6 +58,27 @@ class SongController extends Controller
 
     public function report(Request $request, $songSlug)
     {
+        // Rate limiting: Check if user has reported within the last 2 minutes
+        $lastReportTime = session('last_report_time');
+        $currentTime = now();
+
+        if ($lastReportTime) {
+            $timeSinceLastReport = $currentTime->diffInSeconds($lastReportTime);
+            $waitTime = 120; // 2 minutes in seconds
+
+            if ($timeSinceLastReport < $waitTime) {
+                $remainingTime = $waitTime - $timeSinceLastReport;
+                $minutes = floor($remainingTime / 60);
+                $seconds = $remainingTime % 60;
+
+                $timeMessage = $minutes > 0
+                    ? "{$minutes} minute(s) and {$seconds} second(s)"
+                    : "{$seconds} second(s)";
+
+                return back()->with('error', "Please wait {$timeMessage} before submitting another report.");
+            }
+        }
+
         $validation = [
             'type' => 'required|in:wrong_lyrics,copyright',
             'description' => 'nullable|string|max:1000',
@@ -82,6 +103,9 @@ class SongController extends Controller
             'claimant_email' => $request->claimant_email,
             'claimant_phone' => $request->claimant_phone,
         ]);
+
+        // Store the current time in session for rate limiting
+        session(['last_report_time' => $currentTime]);
 
         return back()->with('success', 'Thank you for your report. We will review it shortly.');
     }

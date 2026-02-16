@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $movie->name . ' - Movie Songs - Nepali Lyrics')
+@section('title', $movie->name . ' - Movie Songs')
 
 @section('description', 'Listen to and view lyrics for songs from the movie ' . $movie->name . '.')
 
@@ -15,45 +15,45 @@
 
 @push('structured-data')
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Movie",
-            "name": "{{ $movie->name }}",
-            @if($movie->cover_image)
-                "image": "{{ asset($movie->cover_image) }}",
-            @endif
-            @if($movie->year)
-                "datePublished": "{{ $movie->year }}",
-            @endif
-            @if($movie->description)
-                "description": "{{ $movie->description }}",
-            @endif
-            "url": "{{ route('movie.show', $movie->slug) }}"
-        }
-        </script>
+            {
+                "@context": "https://schema.org",
+                "@type": "Movie",
+                "name": "{{ $movie->name }}",
+                @if($movie->cover_image)
+                    "image": "{{ asset($movie->cover_image) }}",
+                @endif
+                @if($movie->year)
+                    "datePublished": "{{ $movie->year }}",
+                @endif
+                @if($movie->description)
+                    "description": "{{ $movie->description }}",
+                @endif
+                "url": "{{ route('movie.show', $movie->slug) }}"
+            }
+            </script>
 
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [{
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "{{ route('home') }}"
-            },{
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Movies",
-                "item": "{{ route('movie.index') }}"
-            },{
-                "@type": "ListItem",
-                "position": 3,
-                "name": "{{ $movie->name }}",
-                "item": "{{ route('movie.show', $movie->slug) }}"
-            }]
-        }
-        </script>
+            {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [{
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "{{ route('home') }}"
+                },{
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Movies",
+                    "item": "{{ route('movie.index') }}"
+                },{
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "{{ $movie->name }}",
+                    "item": "{{ route('movie.show', $movie->slug) }}"
+                }]
+            }
+            </script>
 @endpush
 
 @section('content')
