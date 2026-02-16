@@ -166,6 +166,187 @@ graph LR
 
 ---
 
+## :computer: Running on LAN (Local Network Access)
+
+To make your application accessible on your local network:
+
+1. **Find your local IP address**
+   ```bash
+   # On macOS/Linux
+   ifconfig | grep "inet "
+   
+   # On Windows
+   ipconfig
+   ```
+
+2. **Start server with host binding**
+   ```bash
+   php artisan serve --host=YOUR_LOCAL_IP --port=8000
+   ```
+   Example: `php artisan serve --host=192.168.1.107 --port=8000`
+
+3. **Update `.env` file**
+   ```env
+   APP_URL=http://192.168.1.107:8000
+   ```
+
+4. **Access from other devices**
+   - Open `http://YOUR_LOCAL_IP:8000` from any device on the same network
+   - Ensure your firewall allows incoming connections on port 8000
+
+---
+
+## :cloud: Deployment to Shared Hosting (Hostinger)
+
+### Prerequisites
+- cPanel access
+- PHP 8.1+ enabled
+- MySQL database created
+
+### Deployment Steps
+
+1. **Prepare your files**
+   ```bash
+   # Remove development dependencies
+   composer install --optimize-autoloader --no-dev
+   
+   # Clear caches
+   php artisan config:clear
+   php artisan cache:clear
+   ```
+
+2. **Upload files via FTP/File Manager**
+   - Upload all files to `public_html/`
+   - Move contents of `public/` folder to `public_html/`
+   - Move everything else to a folder outside `public_html/` (e.g., `laravel/`)
+
+3. **Update `public_html/index.php`**
+   Change the paths to point to your Laravel folder:
+   ```php
+   require __DIR__.'/../laravel/vendor/autoload.php';
+   $app = require_once __DIR__.'/../laravel/bootstrap/app.php';
+   ```
+
+4. **Create `.env` file on server**
+   ```env
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_URL=https://yourdomain.com
+   APP_KEY=your-generated-key
+   
+   DB_CONNECTION=mysql
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_DATABASE=your_database_name
+   DB_USERNAME=your_database_user
+   DB_PASSWORD=your_database_password
+   ```
+
+5. **Set file permissions via cPanel**
+   - `storage/` → 755 or 775
+   - `bootstrap/cache/` → 755 or 775
+
+6. **Run essential commands via SSH or Terminal in cPanel**
+   ```bash
+   cd laravel
+   php artisan key:generate
+   php artisan storage:link
+   php artisan migrate --force
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+
+7. **Verify database connection**
+   - Check that your database credentials in `.env` match your cPanel database settings
+   - Ensure database user has all privileges
+
+### Important Notes
+- **Never commit `.env`** to version control
+- **Disable debug mode** in production (`APP_DEBUG=false`)
+- **Use HTTPS** for production sites
+- **Keep storage writable** for file uploads
+
+---
+
+## :warning: Troubleshooting
+
+### HTTP 500 Error After Deployment
+
+**Causes & Solutions:**
+
+1. **Missing `.env` file**
+   - Create `.env` file with production settings
+   - Run `php artisan key:generate`
+
+2. **Wrong file permissions**
+   ```bash
+   chmod -R 755 storage bootstrap/cache
+   ```
+
+3. **Missing storage symlink**
+   ```bash
+   php artisan storage:link
+   ```
+
+4. **Database connection failed**
+   - Verify credentials in `.env`
+   - Check database host (use `localhost` on shared hosting)
+   - Ensure database user has correct privileges
+
+5. **Cached configuration**
+   ```bash
+   php artisan config:clear
+   php artisan cache:clear
+   php artisan view:clear
+   ```
+
+### Images Not Displaying
+
+1. **Check storage symlink exists**
+   ```bash
+   ls -la public/storage
+   # Should point to ../storage/app/public
+   ```
+
+2. **Verify file permissions**
+   ```bash
+   chmod -R 755 storage/app/public
+   ```
+
+3. **Check image paths in code**
+   - Use `asset('storage/...')` for public storage files
+   - Use `Storage::url($path)` for dynamic paths
+
+### 403 Forbidden Error
+
+- Check `.htaccess` file exists in `public/` directory
+- Verify directory permissions (should be 755)
+- Ensure `index.php` has correct permissions (644)
+
+### Check Server Logs
+
+**On Hostinger:**
+- cPanel → Files → Error Logs
+- Or check `storage/logs/laravel.log`
+
+**Common log locations:**
+```
+storage/logs/laravel.log
+/var/log/apache2/error.log (if you have access)
+```
+
+### PHP Version Issues
+
+- Verify PHP version in cPanel matches requirements (8.1+)
+- Update `.htaccess` if needed:
+  ```apache
+  # Force PHP 8.1
+  AddHandler application/x-httpd-php81 .php
+  ```
+
+---
+
 ## :art: Design System
 
 ### Color Palette
