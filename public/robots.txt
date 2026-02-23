@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Allow: /
+
+# Sitemap location
+Sitemap: {{ url('/sitemap.xml') }}
+
+# Crawl rate
+Crawl-delay: 1
