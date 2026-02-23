@@ -453,11 +453,11 @@ graph TD
 
 ```mermaid
 graph TD
-    A[User on Song Page] -->|Clicks Print Button| B[/song/{artist}/{slug}/print/{type}]
+    A[User on Song Page] -->|Clicks Print Button| B["/song/{artist}/{slug}/print/{type}"]
     B --> C{Type}
     C -->|unicode| D[Fetch Nepali Lyrics]
     C -->|romanized| E[Fetch Romanized Lyrics]
-    D --> F[print.blade.php]
+    D --> F["print.blade.php"]
     E --> F
     F --> G[Render Print-Optimized HTML]
     G --> H[Load Google Fonts]
@@ -470,7 +470,7 @@ graph TD
     M --> O[Assembled Document]
     N --> O
     O --> P[Footer: Source URL + Print Date]
-    O --> Q[window.onload → window.print]
+    O --> Q["window.onload → window.print()"]
     Q --> R[Browser Print Dialog]
     R --> S[Printed / Saved as PDF]
 ```
